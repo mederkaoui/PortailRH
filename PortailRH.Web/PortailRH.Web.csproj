@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\vendor\sass\node_modules\immutable\dist\immutable.es.js" />
+    <None Include="wwwroot\vendor\sass\node_modules\immutable\dist\immutable.js.flow" />
+    <None Include="wwwroot\vendor\sass\node_modules\immutable\dist\immutable.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +21,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PortailRH.DAL\PortailRH.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\vendor\chartist\dist\scss\settings\" />
+    <Folder Include="wwwroot\vendor\sass\types\legacy\" />
+    <Folder Include="wwwroot\vendor\sass\types\logger\" />
+    <Folder Include="wwwroot\vendor\sass\types\util\" />
+    <Folder Include="wwwroot\vendor\sass\types\value\" />
+    <Folder Include="wwwroot\vendor\waypoints\src\" />
+    <Folder Include="wwwroot\vendor\waypoints\test\" />
   </ItemGroup>
 
 </Project>
