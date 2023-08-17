@@ -3,6 +3,26 @@
         <div class="card-body">
             <div class="row mb-4">
                 <form>
+                    <div>
+                        <h4>Informations Personnelles</h4>
+                        <hr />
+                    </div>
+
+
+                    <div>
+                        <div class="avatar-upload">
+                            <div class="avatar-edit">
+                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                                <label for="imageUpload" id="btnCamera">
+                                    <i class="fa-solid fa-camera" style="color: #9ca3af;"></i>
+                                </label>
+                            </div>
+                            <div class="avatar-preview">
+                                <div id="imagePreview" style="background-image: url(../images/profile.png);"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-lg-4 col-sm-6 mb-4">
                             <label for="cin">CIN</label>
@@ -84,8 +104,189 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="pays">Pays</label>
+                            <select class="form-select" id="pays" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="ville">Ville</label>
+                            <select class="form-select" id="ville" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label for="enfants">Enfants</label>
+                            <input type="number" class="form-control" name="enfants" id="enfants" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-4">
+                            <label for="adresse">Adresse</label>
+                            <input type="text" class="form-control" name="adresse" id="adresse" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Poste</h4>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="departement">Département</label>
+                            <select class="form-select" id="departement" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="fonction">Fonction</label>
+                            <select class="form-select" id="fonction" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label for="salaire">Salaire</label>
+                            <input type="text" class="form-control" name="salaire" id="salaire" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="typeContrat">Type De Contrat</label>
+                            <select class="form-select" id="typeContrat" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-3">
+                            <label for="dateEntree">Date D'entrée</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="dateEntree" id="dateEntree" type="text" placeholder="dd/mm/yyyy" required />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 mb-3">
+                            <label for="dateSortie">Date Sortie</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="dateSortie" id="dateSortie" type="text" placeholder="dd/mm/yyyy" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Banque</h4>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6 mb-4">
+                            <label class="my-1 me-2" for="banque">Banque</label>
+                            <select class="form-select" id="banque" aria-label="Default select example">
+                                <option selected>Ouvrir ce menu de sélection</option>
+                                <option value="celibataire">Célibataire</option>
+                                <option value="marie">Marié</option>
+                                <option value="divorce">Divorcé</option>
+                                <option value="separe">Séparé</option>
+                                <option value="veuf">Veuf</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-6 col-sm-6 mb-3">
+                            <label for="rib">RIB</label>
+                            <input type="text" class="form-control" name="rib" id="rib" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Contact D'urgence</h4>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6 mb-3">
+                            <label for="nomComplet">Nom Complet</label>
+                            <input type="text" class="form-control" name="nomComplet" id="nomComplet" required />
+                        </div>
+
+                        <div class="col-lg-6 col-sm-6 mb-3">
+                            <label for="telephone">Téléphone</label>
+                            <input type="text" class="form-control" name="telephone" id="telephone" required />
+                        </div>
+                    </div>
+
+                    <div class="float-end mt-4">
+                        <button type="reset" class="btn btn-gray-300">
+                            <i class="fa-solid fa-arrow-rotate-left"></i>
+                            Réinitialiser
+                        </button>
+
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Enregistrer
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+    </script>
+}
