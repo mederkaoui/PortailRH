@@ -17,11 +17,11 @@ public partial class Absence
 
     public string? Justification { get; set; }
 
-    public string CinEmployee { get; set; } = null!;
+    public string CinEmploye { get; set; } = null!;
 
     public int? IdDocument { get; set; }
 
-    public virtual Employee CinEmployeeNavigation { get; set; } = null!;
+    public virtual Employe CinEmployeNavigation { get; set; } = null!;
 
     public virtual Document? IdDocumentNavigation { get; set; }
 }

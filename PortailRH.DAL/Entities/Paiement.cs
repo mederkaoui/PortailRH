@@ -7,11 +7,11 @@ public partial class Paiement
 {
     public int Id { get; set; }
 
-    public string CinEmployee { get; set; } = null!;
+    public string CinEmploye { get; set; } = null!;
 
     public double? Salaire { get; set; }
 
     public DateTime? DatePaiement { get; set; }
 
-    public virtual Employee CinEmployeeNavigation { get; set; } = null!;
+    public virtual Employe CinEmployeNavigation { get; set; } = null!;
 }

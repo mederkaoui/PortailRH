@@ -9,7 +9,7 @@ public partial class Contrat
 
     public int IdType { get; set; }
 
-    public string CinEmployee { get; set; } = null!;
+    public string CinEmploye { get; set; } = null!;
 
     public double? Salaire { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Contrat
 
     public DateTime? DateFin { get; set; }
 
-    public virtual Employee CinEmployeeNavigation { get; set; } = null!;
+    public virtual Employe CinEmployeNavigation { get; set; } = null!;
 
     public virtual TypeContrat IdTypeNavigation { get; set; } = null!;
 }

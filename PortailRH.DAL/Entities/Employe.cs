@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PortailRH.DAL.Entities;
 
-public partial class Employee
+public partial class Employe
 {
     public string Cin { get; set; } = null!;
 
@@ -27,7 +27,7 @@ public partial class Employee
 
     public string? Photo { get; set; }
 
-    public string? Address { get; set; }
+    public string? Adresse { get; set; }
 
     public int? IdVille { get; set; }
 
@@ -40,6 +40,8 @@ public partial class Employee
     public string? ContactUrgenceNom { get; set; }
 
     public string? ContactUrgenceTelephone { get; set; }
+
+    public bool? EstSupprime { get; set; }
 
     public virtual ICollection<Absence> Absences { get; set; } = new List<Absence>();
 

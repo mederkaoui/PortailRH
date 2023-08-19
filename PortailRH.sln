@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortailRH.Web", "PortailRH.Web\PortailRH.Web.csproj", "{13544449-4445-43E1-9DC9-3F89F1F5772F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortailRH.Web", "PortailRH.Web\PortailRH.Web.csproj", "{13544449-4445-43E1-9DC9-3F89F1F5772F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortailRH.DAL", "PortailRH.DAL\PortailRH.DAL.csproj", "{C1129791-F30E-4E37-AC18-24763D7069E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortailRH.DAL", "PortailRH.DAL\PortailRH.DAL.csproj", "{C1129791-F30E-4E37-AC18-24763D7069E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortailRH.BLL", "PortailRH.BLL\PortailRH.BLL.csproj", "{A5A1A7F5-0630-4DC2-8696-8774548F0FBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortailRH.BLL", "PortailRH.BLL\PortailRH.BLL.csproj", "{A5A1A7F5-0630-4DC2-8696-8774548F0FBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

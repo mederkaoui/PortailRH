@@ -7,7 +7,7 @@ public partial class Présence
 {
     public int Id { get; set; }
 
-    public string CinEmployee { get; set; } = null!;
+    public string CinEmploye { get; set; } = null!;
 
     public DateTime? DatePresence { get; set; }
 
@@ -15,5 +15,5 @@ public partial class Présence
 
     public TimeSpan? HeureSortie { get; set; }
 
-    public virtual Employee CinEmployeeNavigation { get; set; } = null!;
+    public virtual Employe CinEmployeNavigation { get; set; } = null!;
 }

@@ -11,7 +11,7 @@ public partial class Ville
 
     public int IdPays { get; set; }
 
-    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    public virtual ICollection<Employe> Employes { get; set; } = new List<Employe>();
 
     public virtual Pay IdPaysNavigation { get; set; } = null!;
 }

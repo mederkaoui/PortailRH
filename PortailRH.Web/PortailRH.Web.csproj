@@ -20,10 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PortailRH.BLL\PortailRH.BLL.csproj" />
     <ProjectReference Include="..\PortailRH.DAL\PortailRH.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\EmployeImages\" />
     <Folder Include="wwwroot\vendor\chartist\dist\scss\settings\" />
     <Folder Include="wwwroot\vendor\sass\types\legacy\" />
     <Folder Include="wwwroot\vendor\sass\types\logger\" />

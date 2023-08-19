@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PortailRH.DAL.Entities;
 using PortailRH.DAL.Repositories.GenericRepository;
 using PortailRH.DAL.Repositories.UnitOfWork;
 using System;
@@ -16,7 +17,9 @@ namespace PortailRH.DAL
     {
         public static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
+            services.AddScoped<PortailrhContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
         }

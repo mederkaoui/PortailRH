@@ -35,7 +35,7 @@ public partial class PortailrhContext : DbContext
 
     public virtual DbSet<Document> Documents { get; set; }
 
-    public virtual DbSet<Employee> Employees { get; set; }
+    public virtual DbSet<Employe> Employes { get; set; }
 
     public virtual DbSet<Fonction> Fonctions { get; set; }
 
@@ -65,9 +65,9 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("ABSENCE");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DateDebut)
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_DEBUT");
@@ -81,10 +81,10 @@ public partial class PortailrhContext : DbContext
                 .HasColumnName("JUSTIFICATION");
             entity.Property(e => e.Justifie).HasColumnName("JUSTIFIE");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Absences)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Absences)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ABSENCE_EMPLOYEE");
+                .HasConstraintName("FK_ABSENCE_EMPLOYE");
 
             entity.HasOne(d => d.IdDocumentNavigation).WithMany(p => p.Absences)
                 .HasForeignKey(d => d.IdDocument)
@@ -107,13 +107,13 @@ public partial class PortailrhContext : DbContext
 
         modelBuilder.Entity<Authentification>(entity =>
         {
-            entity.HasKey(e => e.CinEmployee);
+            entity.HasKey(e => e.CinEmploye);
 
             entity.ToTable("AUTHENTIFICATION");
 
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.MotDePasse)
                 .HasMaxLength(255)
                 .HasColumnName("MOT_DE_PASSE");
@@ -121,10 +121,10 @@ public partial class PortailrhContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("NOM_UTILISATEUR");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithOne(p => p.Authentification)
-                .HasForeignKey<Authentification>(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithOne(p => p.Authentification)
+                .HasForeignKey<Authentification>(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AUTHENTIFICATION_EMPLOYEE");
+                .HasConstraintName("FK_AUTHENTIFICATION_EMPLOYE");
         });
 
         modelBuilder.Entity<Banque>(entity =>
@@ -142,9 +142,9 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("CONGE");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DateDebut)
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_DEBUT");
@@ -155,10 +155,10 @@ public partial class PortailrhContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("STATUT");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Conges)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Conges)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CONGE_EMPLOYEE");
+                .HasConstraintName("FK_CONGE_EMPLOYE");
         });
 
         modelBuilder.Entity<Contrat>(entity =>
@@ -166,9 +166,9 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("CONTRAT");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DateDebut)
                 .HasColumnType("date")
                 .HasColumnName("DATE_DEBUT");
@@ -178,10 +178,10 @@ public partial class PortailrhContext : DbContext
             entity.Property(e => e.IdType).HasColumnName("ID_TYPE");
             entity.Property(e => e.Salaire).HasColumnName("SALAIRE");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Contrats)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Contrats)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CONTRAT_EMPLOYEE");
+                .HasConstraintName("FK_CONTRAT_EMPLOYE");
 
             entity.HasOne(d => d.IdTypeNavigation).WithMany(p => p.Contrats)
                 .HasForeignKey(d => d.IdType)
@@ -220,9 +220,9 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("DIPLOME");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.Niveau)
                 .HasMaxLength(50)
                 .HasColumnName("NIVEAU");
@@ -230,10 +230,10 @@ public partial class PortailrhContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("TITRE");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Diplomes)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Diplomes)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_DIPLOME_EMPLOYEE");
+                .HasConstraintName("FK_DIPLOME_EMPLOYE");
         });
 
         modelBuilder.Entity<Document>(entity =>
@@ -252,16 +252,16 @@ public partial class PortailrhContext : DbContext
                 .HasConstraintName("FK_DOCUMENT_TYPE_DOCUMENT");
         });
 
-        modelBuilder.Entity<Employee>(entity =>
+        modelBuilder.Entity<Employe>(entity =>
         {
             entity.HasKey(e => e.Cin);
 
-            entity.ToTable("EMPLOYEE");
+            entity.ToTable("EMPLOYE");
 
             entity.Property(e => e.Cin)
                 .HasMaxLength(50)
                 .HasColumnName("CIN");
-            entity.Property(e => e.Address).HasColumnName("ADDRESS");
+            entity.Property(e => e.Adresse).HasColumnName("ADRESSE");
             entity.Property(e => e.ContactUrgenceNom)
                 .HasMaxLength(100)
                 .HasColumnName("CONTACT_URGENCE_NOM");
@@ -274,6 +274,9 @@ public partial class PortailrhContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(250)
                 .HasColumnName("EMAIL");
+            entity.Property(e => e.EstSupprime)
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("EST_SUPPRIME");
             entity.Property(e => e.IdBanque).HasColumnName("ID_BANQUE");
             entity.Property(e => e.IdFonction).HasColumnName("ID_FONCTION");
             entity.Property(e => e.IdVille).HasColumnName("ID_VILLE");
@@ -303,19 +306,19 @@ public partial class PortailrhContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("TELEPHONE");
 
-            entity.HasOne(d => d.IdBanqueNavigation).WithMany(p => p.Employees)
+            entity.HasOne(d => d.IdBanqueNavigation).WithMany(p => p.Employes)
                 .HasForeignKey(d => d.IdBanque)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EMPLOYEE_BANQUE");
+                .HasConstraintName("FK_EMPLOYE_BANQUE");
 
-            entity.HasOne(d => d.IdFonctionNavigation).WithMany(p => p.Employees)
+            entity.HasOne(d => d.IdFonctionNavigation).WithMany(p => p.Employes)
                 .HasForeignKey(d => d.IdFonction)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EMPLOYEE_FONCTION");
+                .HasConstraintName("FK_EMPLOYE_FONCTION");
 
-            entity.HasOne(d => d.IdVilleNavigation).WithMany(p => p.Employees)
+            entity.HasOne(d => d.IdVilleNavigation).WithMany(p => p.Employes)
                 .HasForeignKey(d => d.IdVille)
-                .HasConstraintName("FK_EMPLOYEE_VILLE");
+                .HasConstraintName("FK_EMPLOYE_VILLE");
         });
 
         modelBuilder.Entity<Fonction>(entity =>
@@ -339,18 +342,18 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("PAIEMENT");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DatePaiement)
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_PAIEMENT");
             entity.Property(e => e.Salaire).HasColumnName("SALAIRE");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Paiements)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Paiements)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PAIEMENT_EMPLOYEE");
+                .HasConstraintName("FK_PAIEMENT_EMPLOYE");
         });
 
         modelBuilder.Entity<Pay>(entity =>
@@ -370,19 +373,19 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("PRÉSENCE");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CinEmployee)
+            entity.Property(e => e.CinEmploye)
                 .HasMaxLength(50)
-                .HasColumnName("CIN_EMPLOYEE");
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DatePresence)
                 .HasColumnType("date")
                 .HasColumnName("DATE_PRESENCE");
             entity.Property(e => e.HeureEntree).HasColumnName("HEURE_ENTREE");
             entity.Property(e => e.HeureSortie).HasColumnName("HEURE_SORTIE");
 
-            entity.HasOne(d => d.CinEmployeeNavigation).WithMany(p => p.Présences)
-                .HasForeignKey(d => d.CinEmployee)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Présences)
+                .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PRESENCE_EMPLOYEE");
+                .HasConstraintName("FK_PRESENCE_EMPLOYE");
         });
 
         modelBuilder.Entity<Recrutement>(entity =>
