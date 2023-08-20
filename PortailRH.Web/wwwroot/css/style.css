@@ -68,3 +68,21 @@
     justify-content: center;
     align-items: center;
 }
+
+.table-image {
+    height: 40px;
+    width: 40px;
+    max-width: none;
+}
+
+.activePageNumber {
+    background: #f3c78e;
+}
+
+.employesTable {
+    table-layout: fixed;
+}
+
+.employesTable th, .employesTable td {
+    text-wrap: wrap
+}

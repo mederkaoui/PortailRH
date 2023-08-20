@@ -1,0 +1,161 @@
+﻿@using PortailRH.BLL.Dtos.Employe
+@model DetailsEmployeDto
+
+<div class="container">
+    <div class="main-body">
+
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="@(Model.Photo != null ? $"../images/EmployeImages/{Model.Photo}" : "../images/EmployeImages/profile.png")" alt="employe profile image" class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4>@Model.Prenom @Model.Nom</h4>
+                                <p class="text-secondary mb-1">@Model.CIN</p>
+                                <p class="text-success mb-1">@Model.Departement</p>
+                                <p class="text-success mb-1">@Model.Fonction</p>
+                                <p class="text-muted font-size-sm">@Model.Ville, @Model.Pays</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0">Type De Contrat</h6>
+                            <span class="text-success">@Model.TypeContrat</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0">Date D'Entree</h6>
+                            <span class="text-success">@Convert.ToDateTime(Model.DateEntree).ToShortDateString()</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0">Date De Sortie</h6>
+                            <span class="text-success">@(Model.DateSortie != null ? Convert.ToDateTime(Model.DateSortie).ToShortDateString() : "-")</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0">Salaire</h6>
+                            <span class="text-success">@Model.Salaire</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Date De Naissance</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Convert.ToDateTime(Model.DateNaissance).ToShortDateString()
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Email
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Téléphone</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Telephone
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Sexe</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Sexe
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Adresse</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Adresse
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Matricule CNSS</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.MatriculeCnss
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Situation Familiale</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.SituationFamiliale
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Enfants</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @(Model.Enfants != null ? Model.Enfants : "-")
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Banque</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Banque
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">RIB</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.RIB
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Contact D'urgence Nom</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.ContactUrgenceNomComplet
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Contact D'urgence Téléphone</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.ContactUrgenceTelephone
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

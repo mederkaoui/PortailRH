@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PortailRH.DAL.Entities;
+using PortailRH.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,6 +155,67 @@ namespace PortailRH.DAL.Repositories.GenericRepository
             {
                 return await query.ToListAsync();
             }
+        }
+
+        public async Task<GenericPaginatedList<TEntity>> GetPaginatedListAsync(int currentPage, int itemsPerPage, Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null, bool disableTracking = true)
+        {
+            _logger.LogInformation($"Getting multiple entities of {EntityType.Name} with the filter {predicate?.ToString()}");
+
+            IQueryable<TEntity> query = _dbSet;
+            ICollection<TEntity> result;
+
+            if (currentPage < 1)
+            {
+                currentPage = 1;
+            }
+
+            if (itemsPerPage < 5)
+            {
+                itemsPerPage = 5;
+            }
+
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                result = await orderBy(query).Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
+            }
+            else
+            {
+                result = await query.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
+            }
+
+            int totalItems = 0;
+            if (predicate != null)
+            {
+                totalItems = await _dbSet.Where(predicate).CountAsync();
+            }
+            else
+            {
+                totalItems = await _dbSet.CountAsync();
+            }
+
+            return new GenericPaginatedList<TEntity> 
+            {
+                Entities = result,
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage,
+                TotalItems = totalItems,
+                TotalPages = totalItems / itemsPerPage
+            };
         }
 
         public void Update(IEnumerable<TEntity> entities)

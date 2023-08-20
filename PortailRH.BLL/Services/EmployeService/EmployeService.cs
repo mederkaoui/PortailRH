@@ -126,6 +126,40 @@ namespace PortailRH.BLL.Services.EmployeService
             };
         }
 
+        /// <summary>
+        /// Get paginated list of employes
+        /// </summary>
+        /// <param name="searchDto">EmployeSearchDto</param>
+        /// <returns>EmployePaginatedListDto</returns>
+        public async Task<EmployePaginatedListDto> GetEmployesPaginatedList(EmployeSearchDto searchDto)
+        {
+            var employes = await _employeRepository.GetPaginatedListAsync(
+                                                        currentPage: searchDto.CurrentPage,
+                                                        itemsPerPage: searchDto.ItemsPerPage,
+                                                        predicate: x => x.EstSupprime == false && 
+                                                                    (searchDto.SearchQuery == null || x.Cin == searchDto.SearchQuery || string.Concat(x.Prenom, " ", x.Nom).Contains(searchDto.SearchQuery ?? string.Empty))
+                                                    );
+
+            return new EmployePaginatedListDto
+            {
+                Employes = employes.Entities.Select(x => new GetEmployeDto
+                {
+                    CIN = x.Cin,
+                    Nom = x.Nom,
+                    Prenom = x.Prenom,
+                    Email = x.Email,
+                    Photo = x.Photo,
+                    Telephone = x.Telephone,
+                }).ToList(),
+                Pagining = new PaginatedDto
+                {
+                    CurrentPage = employes.CurrentPage,
+                    ItemsPerPage = employes.ItemsPerPage,
+                    TotalItems = employes.TotalItems,
+                    TotalPages = employes.TotalPages
+                }
+            };
+        }
 
         /// <summary>
         /// Added new employe to DB
@@ -163,10 +197,79 @@ namespace PortailRH.BLL.Services.EmployeService
                         DateFin = employe.DateSortie,
                         Salaire = employe.Salaire
                     }
-                }
+                },
+                Diplomes = employe.Diplomes != null ? employe.Diplomes.Select(x => new Diplome
+                {
+                    Niveau = x.Niveau,
+                    Titre = x.Titre
+                }).ToList() : new()
             });
 
             await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Archive the employer with cin pass to parameter
+        /// </summary>
+        /// <param name="cin">cin d'employe</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task DeleteEmploye(string cin)
+        {
+            var employe = await _employeRepository.GetAsync(x => x.Cin == cin) 
+                        ?? throw new InvalidDataException($"il n'y a pas d'employé qui correspond à ce cin: {cin}");
+
+            employe.EstSupprime = true;
+
+            _employeRepository.Update(employe);
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Get Detials Employe with cin pass to parameter
+        /// </summary>
+        /// <param name="cin"></param>
+        /// <returns>DetailsEmployeDto</returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task<DetailsEmployeDto> GetDetailsEmploye(string cin)
+        {
+            var employe = await _employeRepository.GetAsync(
+                                                            predicate: x => x.Cin == cin,
+                                                            include: inc => inc.Include(x => x.IdVilleNavigation).ThenInclude(x => x.IdPaysNavigation)
+                                                                                .Include(x => x.IdFonctionNavigation).ThenInclude(x => x.IdDepartementNavigation)
+                                                                                .Include(x => x.IdBanqueNavigation)
+                                                                                .Include(x => x.Contrats).ThenInclude(x => x.IdTypeNavigation)
+                                                        )
+                        ?? throw new InvalidDataException($"il n'y a pas d'employé qui correspond à ce cin: {cin}");
+
+            return new DetailsEmployeDto
+            {
+                CIN = employe.Cin,
+                Nom = employe.Nom,
+                Prenom = employe.Prenom,
+                Adresse = employe.Adresse,
+                Photo = employe.Photo,
+                Banque = employe.IdBanqueNavigation.Nom,
+                RIB = employe.Rib,
+                Departement = employe.IdFonctionNavigation.IdDepartementNavigation.Nom,
+                Fonction = employe.IdFonctionNavigation.Nom,
+                Pays = employe.IdVilleNavigation?.IdPaysNavigation.Nom,
+                Ville = employe.IdVilleNavigation?.Nom,
+                DateNaissance = employe.DateNaissance,
+                DateEntree = employe.Contrats.FirstOrDefault()?.DateDebut,
+                DateSortie = employe.Contrats.FirstOrDefault()?.DateFin,
+                TypeContrat = employe.Contrats.FirstOrDefault()?.IdTypeNavigation.Nom,
+                Telephone = employe.Telephone,
+                SituationFamiliale = employe.SituationFamiliale,
+                Email = employe.Email,
+                Enfants = employe.NombreEnfants,
+                MatriculeCnss = employe.MatriculeCnss,
+                Salaire = Convert.ToSingle(employe.Contrats.FirstOrDefault()?.Salaire),
+                Sexe = employe.Sexe,
+                ContactUrgenceNomComplet = employe.ContactUrgenceNom,
+                ContactUrgenceTelephone = employe.ContactUrgenceTelephone
+            };
         }
     }
 }

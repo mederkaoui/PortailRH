@@ -25,7 +25,7 @@ namespace PortailRH.BLL.Dtos.Employe
         public required string MatriculeCnss { get; set; }
         public required string SituationFamiliale { get; set; }
         public required int Ville { get; set; }
-        public required int Enfants { get; set; }
+        public int Enfants { get; set; }
         public required string Adresse { get; set; }
         public required int Fonction { get; set; }
         public required float Salaire { get; set; }
@@ -36,5 +36,6 @@ namespace PortailRH.BLL.Dtos.Employe
         public required string RIB { get; set; }
         public required string ContactUrgenceNomComplet { get; set; }
         public required string ContactUrgenceTelephone { get; set; }
+        public ICollection<DiplomeDto>? Diplomes { get; set; }
     }
 }

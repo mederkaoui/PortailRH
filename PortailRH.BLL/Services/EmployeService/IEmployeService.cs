@@ -14,6 +14,12 @@ namespace PortailRH.BLL.Services.EmployeService
     {
         public Task<EmployeSelectListsDto> GetSelectListsData();
 
+        public Task<EmployePaginatedListDto> GetEmployesPaginatedList(EmployeSearchDto searchDto);
+
         public Task AddedEmploye(NouvelEmployeDto employe);
+        
+        public Task DeleteEmploye(string cin);
+
+        public Task<DetailsEmployeDto> GetDetailsEmploye(string cin);
     }
 }

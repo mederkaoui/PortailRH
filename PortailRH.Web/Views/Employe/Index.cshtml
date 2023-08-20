@@ -1,0 +1,250 @@
+﻿@using PortailRH.BLL.Dtos.Employe
+@model EmployePaginatedListDto
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div class="table-settings mb-4">
+    <div class="row align-items-center justify-content-between">
+        <div class="col col-md-6 col-lg-3 col-xl-4">
+            <form action="GetFilteredEmployes" method="get">
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" name="SearchQuery" class="form-control" placeholder="Rechercher par CIN ou nom complet">
+                </div>
+            </form>
+        </div>
+        <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
+           <form method="get" action="/Employe/GetFilteredEmployes">
+            <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
+                <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
+                <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
+                <option value="30" selected="@(Model?.Pagining?.ItemsPerPage == 30 ? "selected" : null)">30</option>
+                <option value="50" selected="@(Model?.Pagining?.ItemsPerPage == 50 ? "selected" : null)">50</option>
+                <option value="100" selected="@(Model?.Pagining?.ItemsPerPage == 100 ? "selected" : null)">100</option>
+            </select>
+        </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead class="thead-light">
+            <tr>
+                <th class="border-0 rounded-start">Nom</th>
+                <th class="border-0">Prenom</th>
+                <th class="border-0">CIN</th>
+                <th class="border-0">Email</th>
+                <th class="border-0">Telephone</th>
+                <th class="border-0">Opérations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Employes != null)
+            {
+                foreach (var employe in Model.Employes)
+                {
+                    <tr>
+                        <td class="border-0">
+                            <a href="#" class="d-flex align-items-center">
+                                <img class="me-2 image table-image rounded-circle" alt="Image placeholder" src="@(employe.Photo != null ? $"../images/EmployeImages/{employe.Photo}" : "../images/EmployeImages/profile.png")" />
+                                <div><span class="h6">@employe.Nom</span></div>
+                            </a>
+                        </td>
+                        <td class="border-0 fw-bold">@employe.Prenom</td>
+                        <td class="border-0 fw-bold">@employe.CIN</td>
+                        <td class="border-0 fw-bold">@employe.Email</td>
+                        <td class="border-0">@employe.Telephone</td>
+                        <td class="border-0 fw-bold">
+                            <button class="btn btn-sm btnDetails btn-warning" data-cin="@employe.CIN">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success" data-cin="@employe.CIN">
+                                <i class="fa-solid fa-user-pen" style="color: #ffffff;"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btnDelete" data-cin="@employe.CIN">
+                                <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+    
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                        "<a class='page-link' href='/Employe/GetFilteredEmployes?CurrentPage=" +
+                            (
+                                ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                                ? 1
+                                : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                            ) + 
+                        "'>Previous</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/Employe/GetFilteredEmployes?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/Employe/GetFilteredEmployes?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                        "<a class='page-link' href='/Employe/GetFilteredEmployes?CurrentPage=" +
+                            (
+                                ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                                ? (Model?.Pagining?.TotalPages ?? 1)
+                                : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                            ) +
+                        "'>Next</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+
+<!--Start Modal-->
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card border-0 shadow">
+            <div class="card-body">
+                <div class="row d-block mt-4">
+                    <div class="col-lg-4">
+                        <!-- Button Modal -->
+                        <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#modal-default">Default</button>
+                        <!-- Modal Content -->
+                        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="h6 modal-title">Employé Détails</h2>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="modalBody">
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Modal Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End Modal-->
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        $('body').on('click', '.btnDelete', function () {
+            var cin = $(this).data('cin');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "êtes-vous sûr de vouloir supprimer cet employé?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Employe/DeleteEmploye?cin=" + cin;
+                }
+            })
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('body').on('click', '.btnDetails', function () {
+            var cin = $(this).data('cin');
+
+            $.ajax({
+                url: '/Employe/GetDetailsEmploye',
+                method: 'GET',
+                data: {cin: cin},
+                success: function (result) {
+                    $('#modalBody').html(result);
+                    $('#btnShowModal').click();
+                }
+            });
+        });
+    </script>
+}

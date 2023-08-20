@@ -39,9 +39,18 @@ namespace PortailRH.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<ActionResult<EmployePaginatedListDto>> Index()
         {
-            return View();
+            try
+            {
+                var employes = await _employeService.GetEmployesPaginatedList(new EmployeSearchDto());
+
+                return View(employes);
+            }
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
         }
 
         public async Task<IActionResult> NouvelEmploye()
@@ -57,7 +66,6 @@ namespace PortailRH.Web.Controllers
                 return View(); //TODO: handel pages 404, 500
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AjouterEmploye(NouvelEmployeDto employe)
@@ -105,6 +113,55 @@ namespace PortailRH.Web.Controllers
                 TempData["ErrorMessage"] = "Une erreur s'est produite lors de l'ajout de l'employé.";
 
                 return View("NouvelEmploye", employe);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<EmployePaginatedListDto>> GetFilteredEmployes(EmployeSearchDto employeSearchDto)
+        {
+            try
+            {
+                var employes = await _employeService.GetEmployesPaginatedList(employeSearchDto);
+
+                return View("Index", employes);
+            }
+            catch
+            {
+                return View("Index");
+            }
+        }
+
+        public async Task<ActionResult> DeleteEmploye(string cin)
+        {
+            try
+            {
+                await _employeService.DeleteEmploye(cin);
+
+                TempData["SuccessMessage"] = "Employé est supprimer avec succès !";
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de la suppression de l'employé.";
+
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<ActionResult> GetDetailsEmploye(string cin)
+        {
+            try
+            {
+                var detailsEmploye = await _employeService.GetDetailsEmploye(cin);
+
+                return PartialView("_DetailsEmploye", detailsEmploye);
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de l'obtenir les details de l'employé.";
+
+                return RedirectToAction("Index");
             }
         }
     }
