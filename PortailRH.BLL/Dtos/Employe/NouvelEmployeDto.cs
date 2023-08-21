@@ -36,6 +36,8 @@ namespace PortailRH.BLL.Dtos.Employe
         public required string RIB { get; set; }
         public required string ContactUrgenceNomComplet { get; set; }
         public required string ContactUrgenceTelephone { get; set; }
-        public ICollection<DiplomeDto>? Diplomes { get; set; }
+        public ICollection<DiplomeDto> Diplomes { get; set; } = new List<DiplomeDto>();
+        public required string NomUtilisateur { get; set; }
+        public required string ModeDePasse { get; set; }
     }
 }

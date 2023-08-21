@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Server;
 using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Services.EmployeService;
+using PortailRH.BLL.Services.TypeContratService;
 
 namespace PortailRH.Web.Controllers
 {
@@ -15,6 +16,11 @@ namespace PortailRH.Web.Controllers
         /// IEmployeService
         /// </summary>
         private readonly IEmployeService _employeService;
+
+        /// <summary>
+        /// ITypeContratService
+        /// </summary>
+        private readonly ITypeContratService _typeContratService;
 
         /// <summary>
         /// IWebHostEnvironment
@@ -30,15 +36,18 @@ namespace PortailRH.Web.Controllers
         /// Constructor
         /// </summary>
         /// <param name="employeService">IEmployeService</param>
+        /// <param name="typeContratService">ITypeContratService</param>
         /// <param name="webHostEnvironment">IWebHostEnvironment</param>
         /// <param name="logger">ILogger<EmployeController></param>
-        public EmployeController(IEmployeService employeService, IWebHostEnvironment webHostEnvironment, ILogger<EmployeController> logger)
+        public EmployeController(IEmployeService employeService, ITypeContratService typeContratService, IWebHostEnvironment webHostEnvironment, ILogger<EmployeController> logger)
         {
             _employeService = employeService;
+            _typeContratService = typeContratService;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
         }
 
+        [HttpGet]
         public async Task<ActionResult<EmployePaginatedListDto>> Index()
         {
             try
@@ -53,6 +62,7 @@ namespace PortailRH.Web.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> NouvelEmploye()
         {
             try
@@ -131,6 +141,7 @@ namespace PortailRH.Web.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<ActionResult> DeleteEmploye(string cin)
         {
             try
@@ -149,6 +160,7 @@ namespace PortailRH.Web.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<ActionResult> GetDetailsEmploye(string cin)
         {
             try
@@ -162,6 +174,126 @@ namespace PortailRH.Web.Controllers
                 TempData["ErrorMessage"] = "Une erreur s'est produite lors de l'obtenir les details de l'employé.";
 
                 return RedirectToAction("Index");
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ModifierEmploye(string cin)
+        {
+            try
+            {
+                ViewBag.ListsData = await _employeService.GetSelectListsData();
+                var detailsEmploye = await _employeService.GetDetailsEmploye(cin);
+
+                return View(detailsEmploye);
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de l'obtenir les details de l'employé.";
+
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ModifierEmploye(NouvelEmployeDto employe)
+        {
+            try
+            {
+                ViewBag.ListsData = await _employeService.GetSelectListsData();
+
+                if (ModelState.IsValid)
+                {
+                    // Handle image upload
+                    if (employe.Photo != null && employe.Photo.Length > 0)
+                    {
+                        string uploadFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images/EmployeImages");
+                        if (!Directory.Exists(uploadFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadFolderPath);
+                        }
+
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + employe.Photo.FileName;
+                        string filePath = Path.Combine(uploadFolderPath, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await employe.Photo.CopyToAsync(fileStream);
+                        }
+
+                        employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
+                    }
+
+                    var updatedEmploye = await _employeService.UpdateEmploye(employe);
+
+                    TempData["SuccessMessage"] = "Employé modifié avec succès!";
+
+                    return View("ModifierEmploye", updatedEmploye);
+                }
+                else
+                {
+                    return View("ModifierEmploye", employe);
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de la Modification de l'employé.";
+
+                return View("ModifierEmploye", employe);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<EmployePaginatedListDto>> AnciensEmployes(EmployeSearchDto searchDto)
+        {
+            try
+            {
+                var anciensEmployes = await _employeService.GetAnciensEmployesPaginatedList(searchDto ?? new EmployeSearchDto());
+                ViewBag.TypesContat = await _typeContratService.GetTypesContrat();
+
+                return View(anciensEmployes);
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> DeleteEmployeDefinitely(string cin)
+        {
+            try
+            {
+                await _employeService.DeleteEmployeDefinitely(cin);
+
+                TempData["SuccessMessage"] = "Employé est supprimer avec succès !";
+
+                return RedirectToAction("AnciensEmployes");
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de la suppression de l'employé.";
+
+                return RedirectToAction("AnciensEmployes");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> NouveauContrat(EmployeNouveauContratDto nouveauContratDto)
+        {
+            try
+            {
+                await _employeService.NewContract(nouveauContratDto);
+                
+                TempData["SuccessMessage"] = "Nouveau contrat est sauvegardé avec succès!";
+
+                return RedirectToAction("AnciensEmployes");
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de la sauvegarde nouveau contrat!";
+
+                return RedirectToAction("AnciensEmployes");
             }
         }
     }

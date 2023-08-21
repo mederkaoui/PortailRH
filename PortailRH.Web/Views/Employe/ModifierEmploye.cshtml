@@ -1,5 +1,5 @@
 ﻿@using PortailRH.BLL.Dtos.Employe
-@model NouvelEmployeDto
+@model DetailsEmployeDto
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -15,8 +15,7 @@
     <div class="card border-0 shadow components-section">
         <div class="card-body">
             <div class="row mb-4">
-                <form asp-action="AjouterEmploye" method="post" enctype="multipart/form-data">
-
+                <form asp-action="ModifierEmploye" method="post" enctype="multipart/form-data">
                     <div>
                         <h4>Informations Personnelles</h4>
                         <hr />
@@ -45,13 +44,13 @@
 
                         <div class="col-lg-4 col-sm-6 mb-4">
                             <label for="nom">Nom</label>
-                            <input type="text" class="form-control" name="Nom" id="nom" value="@Model?.Nom" required data-val="true" onchange="generateUserName()" />
+                            <input type="text" class="form-control" name="Nom" id="nom" value="@Model?.Nom" required data-val="true" />
                             @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="col-lg-4 col-sm-6 mb-4">
                             <label for="prenom">Prenom</label>
-                            <input type="text" class="form-control" name="Prenom" id="prenom" value="@Model?.Prenom" required data-val="true" onchange="generateUserName()" />
+                            <input type="text" class="form-control" name="Prenom" id="prenom" value="@Model?.Prenom" required data-val="true" />
                             @Html.ValidationMessageFor(model => model.Prenom, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -75,20 +74,19 @@
                         </div>
 
                         <div class="col-lg-4 col-sm-6 mb-3 px-4">
-                            <!-- Radio -->
                             <fieldset>
                                 <legend class="h6">Sexe</legend>
 
                                 <div class="row">
                                     <div class="form-check col-4">
-                                        <input class="form-check-input" type="radio" name="Sexe" id="homme" value="homme" checked />
+                                        <input class="form-check-input" type="radio" name="Sexe" id="homme" value="homme" checked="@(Model?.Sexe == "homme" ? true : false)" />
                                         <label class="form-check-label" for="homme">
                                             Homme
                                         </label>
                                     </div>
 
                                     <div class="form-check col-4">
-                                        <input class="form-check-input" type="radio" name="Sexe" id="femme" value="femme" />
+                                        <input class="form-check-input" type="radio" name="Sexe" id="femme" value="femme" checked="@(Model?.Sexe == "femme" ? true : false)  />
                                         <label class="form-check-label" for="femme">
                                             Femme
                                         </label>
@@ -117,11 +115,11 @@
                             <label class="my-1 me-2" for="situationFamiliale">Situation Familiale</label>
                             <select class="form-select" id="situationFamiliale" name="SituationFamiliale" required>
                                 <option selected disabled>Choisissez une situation familiale</option>
-                                <option value="celibataire">Célibataire</option>
-                                <option value="marie">Marié</option>
-                                <option value="divorce">Divorcé</option>
-                                <option value="separe">Séparé</option>
-                                <option value="veuf">Veuf</option>
+                                <option value="celibataire" selected="@(Model?.SituationFamiliale == "celibataire" ? true : false)">Célibataire</option>
+                                <option value="marie" selected="@(Model?.SituationFamiliale == "marie" ? true : false)">Marié</option>
+                                <option value="divorce" selected="@(Model?.SituationFamiliale == "divorce" ? true : false)">Divorcé</option>
+                                <option value="separe" selected="@(Model?.SituationFamiliale == "separe" ? true : false)">Séparé</option>
+                                <option value="veuf" selected="@(Model?.SituationFamiliale == "veuf" ? true : false)">Veuf</option>
                             </select>
                             @Html.ValidationMessageFor(model => model.SituationFamiliale, "", new { @class = "text-danger" })
                         </div>
@@ -136,7 +134,7 @@
                                 {
                                     foreach (var pays in ViewBag.ListsData.Pays)
                                     {
-                                        <option value="@pays.Id">@pays.Nom</option>
+                                        <option value="@pays.Id" selected="@(pays.Nom == Model?.Pays ? true : false)">@pays.Nom</option>
                                     }
                                 }
                             </select>
@@ -179,7 +177,7 @@
                                 {
                                     foreach (var departement in ViewBag.ListsData.Departements)
                                     {
-                                        <option value="@departement.Id">@departement.Nom</option>
+                                        <option value="@departement.Id" selected="@(departement.Nom == Model?.Departement ? true : false)">@departement.Nom</option>
                                     }
                                 }
                             </select>
@@ -209,7 +207,7 @@
                                 {
                                     foreach (var type in ViewBag.ListsData.TypesContrat)
                                     {
-                                        <option value="@type.Id">@type.Nom</option>
+                                        <option value="@type.Id" selected="@(type.Nom == Model?.TypeContrat ? true : false)">@type.Nom</option>
                                     }
                                 }
                             </select>
@@ -253,7 +251,7 @@
                                 {
                                     foreach (var banque in ViewBag.ListsData.Banques)
                                     {
-                                        <option value="@banque.Id">@banque.Nom</option>
+                                        <option value="@banque.Id" selected="@(banque.Nom == Model?.Banque ? true : false)">@banque.Nom</option>
                                     }
                                 }
                             </select>
@@ -342,7 +340,7 @@
 
                         <div class="col-lg-6 col-sm-6 mb-3">
                             <label for="modeDePasse">Mode De Passe</label>
-                            <input type="text" class="form-control" name="ModeDePasse" id="modeDePasse" value="@Model?.ModeDePasse" required data-val="true" />
+                            <input type="password" class="form-control" name="ModeDePasse" id="modeDePasse" value="@Model?.ModeDePasse" required data-val="true" />
                             @Html.ValidationMessageFor(model => model.ModeDePasse, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -355,7 +353,7 @@
 
                         <button type="submit" class="btn btn-secondary">
                             <i class="fa-solid fa-floppy-disk"></i>
-                            Enregistrer
+                            Modifier
                         </button>
                     </div>
                 </form>
@@ -365,7 +363,7 @@
 </div>
 
 @section Scripts
-{
+    {
     <script>
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -491,44 +489,45 @@
                 newDiplomeEntry.className = "diplome-entry";
 
                 newDiplomeEntry.innerHTML = `
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6 mb-3">
-                                <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
-                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
-                            </div>
-                            <div class="col-lg-6 col-sm-6 mb-3">
-                                <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
-                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
-                            </div>
-                        </div>
-                    `;
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                        <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
+                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                        <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
+                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
+                                    </div>
+                                </div>
+                            `;
 
                 diplomesContainer.appendChild(newDiplomeEntry);
                 diplomeCount++;
             });
         });
 
-        //Generate Random Password
-        const generatePassword = () => {
-            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()_+";
-            const passwordLength = 12; // Adjust the length as needed
-            let password = "";
+        $(document).ready(function () {
+            $('#pays').trigger('change');
+            $('#departement').trigger('change');
 
-            for (let i = 0; i < passwordLength; i++) {
-                const randomIndex = Math.floor(Math.random() * charset.length);
-                password += charset.charAt(randomIndex);
-            }
+            var ville = @Html.Raw(Json.Serialize(Model?.Ville));
+            var fonction = @Html.Raw(Json.Serialize(Model?.Fonction));
 
-            return password;
-        };
-        $('#modeDePasse').val(generatePassword());
+            $("#ville option").each(function () {
+                if ($(this).text() === ville) {
+                    $(this).prop("selected", true);
+                } else {
+                    $(this).prop("selected", false);
+                }
+            });
 
-        //Generate Username from full name
-        function generateUserName() {
-            var firstName = $('#prenom').val();
-            var lastName = $('#nom').val();
-
-            $('#nomUtilisateur').val(firstName + '.' + lastName);
-        }
+            $("#fonction option").each(function () {
+                if ($(this).text() === fonction) {
+                    $(this).prop("selected", true);
+                } else {
+                    $(this).prop("selected", false);
+                }
+            });
+        });
     </script>
 }

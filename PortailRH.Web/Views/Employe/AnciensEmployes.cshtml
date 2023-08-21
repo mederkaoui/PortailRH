@@ -14,7 +14,7 @@
 <div class="table-settings mb-4">
     <div class="row align-items-center justify-content-between">
         <div class="col col-md-6 col-lg-3 col-xl-4">
-            <form action="/Employe/GetFilteredEmployes" method="get">
+            <form action="/Employe/AnciensEmployes" method="get">
                 <div class="input-group me-2 me-lg-3 fmxw-400">
                     <span class="input-group-text">
                         <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
@@ -24,7 +24,7 @@
             </form>
         </div>
         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-           <form method="get" action="/Employe/GetFilteredEmployes">
+            <form method="get" action="/Employe/AnciensEmployes">
                 <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
                     <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
                     <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
@@ -70,9 +70,9 @@
                             <button class="btn btn-sm btnDetails btn-warning" data-cin="@employe.CIN">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
-                            <a class="btn btn-sm btn-success" href="/Employe/ModifierEmploye?cin=@employe.CIN">
-                                <i class="fa-solid fa-user-pen" style="color: #ffffff;"></i>
-                            </a>
+                            <button class="btn btn-sm btn-gray-800 btnNewContract" data-cin="@employe.CIN">
+                                <i class="fa-solid fa-plus" style="color: #ffffff;"></i>
+                            </button>
                             <button class="btn btn-sm btn-danger btnDelete" data-cin="@employe.CIN">
                                 <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
                             </button>
@@ -171,6 +171,72 @@
 </div>
 
 <!--End Modal-->
+
+
+<!--New Contract Modal-->
+
+<div class="col-lg-4">
+    <!-- Button Modal -->
+    <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnNewContractModal" data-bs-toggle="modal" data-bs-target="#modal-form"></button>
+    <!-- Modal Content -->
+    <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card p-3 p-lg-4">
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center text-md-center mb-4 mt-md-0">
+                            <h1 class="mb-0 h4">Nouveau Contrat</h1>
+                        </div>
+                        <form action="/Employe/NouveauContrat" method="post" class="mt-4">
+                            <input type="hidden" id="newContractCin" name="CIN" />
+
+                            <div class="form-group mb-4">
+                                <label class="my-1 me-2" for="typeContrat">Type De Contrat</label>
+                                <select class="form-select" id="typeContrat" name="TypeContrat" required>
+                                    <option selected disabled>Choisissez un type</option>
+                                    @if (ViewBag.TypesContat != null)
+                                    {
+                                        foreach (var type in ViewBag.TypesContat)
+                                        {
+                                            <option value="@type.Id">@type.Nom</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="dateEntree">Date D'Entrée</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                    </span>
+                                    <input data-datepicker="" class="form-control" name="DateEntree" id="dateEntree" type="text" placeholder="dd/mm/yyyy" required data-val="true" />
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-group mb-4">
+                                    <label for="salaire">Salaire</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="Salaire" id="salaire" required data-val="true" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-gray-800">Sauvegarder</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Modal Content -->
+</div>
+
+<!--End Contract Modal-->
+
 @section Scripts {
     <script>
         const swalWithBootstrapButtons = Swal.mixin({
@@ -185,7 +251,7 @@
             var cin = $(this).data('cin');
             Swal.fire({
                 title: 'Supprimer',
-                text: "êtes-vous sûr de vouloir supprimer cet employé?",
+                text: "êtes-vous sûr de vouloir supprimer cet employé définitivement?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -194,7 +260,7 @@
                 cancelButtonText: 'Non, Annuler!',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "/Employe/DeleteEmploye?cin=" + cin;
+                    window.location.href = "/Employe/DeleteEmployeDefinitely?cin=" + cin;
                 }
             })
         });
@@ -243,6 +309,13 @@
                     $('#btnShowModal').click();
                 }
             });
+        });
+
+        $('body').on('click', '.btnNewContract', function () {
+            var cin = $(this).data('cin');
+
+            $('#newContractCin').val(cin);
+            $('#btnNewContractModal').click();
         });
     </script>
 }
