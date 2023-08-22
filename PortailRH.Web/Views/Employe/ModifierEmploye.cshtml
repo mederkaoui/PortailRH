@@ -416,6 +416,39 @@
             }
         }
 
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
         //Change Fonctions based on the selected département
         function updateFonctions(departementSelect) {
             var selectedDepartementId = departementSelect.value;
@@ -440,40 +473,6 @@
                     option.text = fonction.nom;
                     fonctionSelect.appendChild(option);
                 });
-            }
-        }
-
-        //Show Success Alert After Employee Has Been Added
-        ShowSuccessAlert();
-        function ShowSuccessAlert() {
-            // Check if the message div exists
-            const successMessage = $('#successMessage').text();
-            if (successMessage != null && successMessage != '') {
-
-                swalWithBootstrapButtons.fire({
-                    icon: 'success',
-                    title: 'Succès',
-                    text: successMessage,
-                    showConfirmButton: true,
-                    timer: 5000
-                })
-
-            }
-        }
-
-        //Show Error Alert If the Employee Wasn't Added
-        ShowErrorAlert();
-        function ShowErrorAlert() {
-            // Check if the message div exists
-            const errorMessage = $('#errorMessage').text();
-            if (errorMessage != null && errorMessage != '') {
-
-                swalWithBootstrapButtons.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: errorMessage,
-                })
-
             }
         }
 

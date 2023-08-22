@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.EmployeService;
+using PortailRH.BLL.Services.RecrutementService;
 using PortailRH.BLL.Services.TypeContratService;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,8 @@ namespace PortailRH.BLL
         {
             services.AddScoped<IEmployeService, EmployeService>();
             services.AddScoped<ITypeContratService, TypeContratService>();
+            services.AddScoped<IRecrutementService, RecrutementService>();
+            services.AddScoped<IDepartementService, DepartementService>();
 
             return services;
         }

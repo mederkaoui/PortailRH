@@ -393,6 +393,7 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("RECRUTEMENT");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.DatedCreation).HasColumnType("datetime");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("EMAIL");

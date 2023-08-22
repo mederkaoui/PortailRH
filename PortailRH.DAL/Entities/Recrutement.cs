@@ -15,6 +15,8 @@ public partial class Recrutement
 
     public string? Telephone { get; set; }
 
+    public DateTime? DatedCreation { get; set; }
+
     public int IdFonction { get; set; }
 
     public int IdDocument { get; set; }

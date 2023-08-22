@@ -6,11 +6,8 @@
     <!-- Primary Meta Tags -->
     <title>Portail RH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="title" content="Volt - Free Bootstrap 5 Dashboard">
-    <meta name="author" content="Themesberg">
-    <meta name="description" content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
-    <meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard" />
-
+    <meta name="title" content="Portail RH">
+    <meta charset="UTF-8">
     <!--FontAwesom-->
     <link href="~/lib/fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="~/lib/fontawesome/css/brands.css" rel="stylesheet">
@@ -27,6 +24,7 @@
     <link type="text/css" href="~/css/volt.css" rel="stylesheet">
     <link type="text/css" href="~/css/style.css" rel="stylesheet">
 
+    @RenderSection("Styles", false)
     <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
 
 </head>
@@ -159,7 +157,7 @@
                 </div>
             </div>
         </nav>
-
+        
         @RenderBody()
 
         <footer class="bg-white rounded shadow p-5 mb-4 mt-4">
@@ -248,7 +246,7 @@
                 $("#" + activeItem).addClass("active");
                 $('#' + activeItem + ' #submenu-app').addClass('show');
             }
-
+            
             // Add click event listeners to navigation items
             $(".nav-item").click(function () {
                 if ($(this).attr('id') != undefined) {

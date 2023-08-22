@@ -1,0 +1,489 @@
+﻿@using PortailRH.BLL.Dtos.Recrutement
+@model RecrutementPaginatedListDto
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div class="table-settings mb-4">
+    <form action="/Recrutement" method="get">
+        <div class="row align-items-center justify-content-between">
+            <div class="col col-md-3 col-lg-3 col-xl-4 mb-4">
+                <label class="my-1 me-2" for="nomComplet">Nom Complet</label>
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" id="nomComplet" name="NomComplet" class="form-control" placeholder="Rechercher par nom complet">
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="departement">Département</label>
+                <select class="form-select" id="departement" name="Departement" onchange="updateFonctions(this)">
+                    <option selected disabled>Choisissez une Département</option>
+                    @if (ViewBag.ListDepartements != null)
+                    {
+                        foreach (var departement in ViewBag.ListDepartements)
+                        {
+                            <option value="@departement.Id">@departement.Nom</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="fonction">Fonction</label>
+                <select class="form-select" id="fonction" name="Fonction">
+                    <option selected disabled>Choisissez une Fonction</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <label for="dateDebut">Date De Début</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input data-datepicker="" class="form-control" name="DateDebut" id="dateDebut" type="text" placeholder="dd/mm/yyyy" />
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <label for="dateFin">Date De Fin</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input data-datepicker="" class="form-control" name="DateFin" id="dateFin" type="text" placeholder="dd/mm/yyyy" />
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <button type="submit" class="btn btn-twitter text-white mt-4 w-100">Recherche</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="d-flex justify-content-end mb-4">
+    <button class="btn btn-success text-white" id="btnNouveauxRecrutements">Nouveaux Recrutement</button>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead>
+            <tr>
+                <th class="border-0">Nom Complet</th>
+                <th class="border-0">Date De Création</th>
+                <th class="border-0">Département</th>
+                <th class="border-0">Fonction</th>
+                <th class="border-0">CV</th>
+                <th class="border-0">Opérations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Recrutements != null)
+            {
+                foreach (var recrutement in Model.Recrutements)
+                {
+                    <tr>
+                        <td class="border-0">@recrutement.Prenom @recrutement.Nom</td>
+                        <td class="border-0">@Convert.ToDateTime(recrutement.DateCreation).ToShortDateString()</td>
+                        <td class="border-0">@recrutement.Departement</td>
+                        <td class="border-0">@recrutement.Fonction</td>
+                        <td class="border-0">
+                            <a href="~/documents/cv/@recrutement.Document">@string.Concat(recrutement.Nom, "_", recrutement.Prenom, "_CV")</a>
+                        </td>
+
+                        <td class="border-0 text-center">
+                            <button class="btn btn-sm btnDetails btn-warning" data-id="@recrutement.Id">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btnDelete" data-id="@recrutement.Id">
+                                <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <div class="col-4 col-md-2 col-xl-1 ps-md-0">
+            <form method="get" action="/Recrutement">
+                <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
+                    <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
+                    <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
+                    <option value="30" selected="@(Model?.Pagining?.ItemsPerPage == 30 ? "selected" : null)">30</option>
+                    <option value="50" selected="@(Model?.Pagining?.ItemsPerPage == 50 ? "selected" : null)">50</option>
+                    <option value="100" selected="@(Model?.Pagining?.ItemsPerPage == 100 ? "selected" : null)">100</option>
+                </select>
+            </form>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Recrutement?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                    ? 1
+                    : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                    ) +
+                    "'>Previous</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/Recrutement?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/Recrutement?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Recrutement?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                    ? (Model?.Pagining?.TotalPages ?? 1)
+                    : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                    ) +
+                    "'>Next</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+
+<!--Start Modal-->
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card border-0 shadow">
+            <div class="card-body">
+                <div class="row d-block mt-4">
+                    <div class="col-lg-4">
+                        <!-- Button Modal -->
+                        <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#modal-default">Default</button>
+                        <!-- Modal Content -->
+                        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="h6 modal-title">Recrutement Détails</h2>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="modalBody">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Modal Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End Modal-->
+
+<!--Start Nouveaux Recrutements Modal-->
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card border-0 shadow">
+            <div class="card-body">
+                <div class="row d-block mt-4">
+                    <div class="col-lg-4">
+                        <!-- Button Modal -->
+                        <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowNouveauxRecrutementsModal" data-bs-toggle="modal" data-bs-target="#NouveauxRecrutementsModal">Default</button>
+                        <!-- Modal Content -->
+                        <div class="modal fade" id="NouveauxRecrutementsModal" tabindex="-1" role="dialog" aria-labelledby="NouveauxRecrutementsModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="h6 modal-title">Ajouter Un Recrutement</h2>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="Recrutement/AjouterRecrutement" method="post" enctype="multipart/form-data">
+                                        <div class="modal-body" id="nouveauxRecrutementsModalBody">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label for="nom">Nom</label>
+                                                    <input type="text" class="form-control" name="Nom" id="nom" required data-val="true" />
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Nom" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label for="prenom">Prenom</label>
+                                                    <input type="text" class="form-control" name="Prenom" id="prenom" required data-val="true" />
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Prenom" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label for="email">Email</label>
+                                                    <input type="email" class="form-control" name="Email" id="email" required data-val="true" />
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label for="telephone">Téléphone</label>
+                                                    <input type="text" class="form-control" name="Telephone" id="telephone" required data-val="true" />
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Telephone" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-lg-4 col-sm-6 mb-3">
+                                                    <label for="dateCreation">Date De Création</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">
+                                                            <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                                        </span>
+                                                        <input data-datepicker="" class="form-control" name="DateCreation" id="dateCreation" type="text" placeholder="dd/mm/yyyy" required data-val="true" />
+                                                    </div>
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="DateCreation" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label for="document" class="form-label">Télécharger un cv</label>
+                                                    <input class="form-control" type="file" id="document" name="Document" required />
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Document" data-valmsg-replace="true"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label class="my-1 me-2" for="departementN">Département</label>
+                                                    <select class="form-select" id="departementN" name="Departement" onchange="updateNouveauxFonctions(this)" required>
+                                                        <option selected disabled>Choisissez une département</option>
+                                                        @if (ViewBag.ListDepartements != null)
+                                                        {
+                                                            foreach (var departement in ViewBag.ListDepartements)
+                                                            {
+                                                                <option value="@departement.Id">@departement.Nom</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Departement" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-lg-4 col-sm-6 mb-4">
+                                                    <label class="my-1 me-2" for="fonctionN">Fonction</label>
+                                                    <select class="form-select" id="fonctionN" name="Fonction" required>
+                                                        <option selected disabled>Choisissez une fonction</option>
+                                                    </select>
+                                                    <span class="text-danger field-validation-valid" data-valmsg-for="Fonction" data-valmsg-replace="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+                                            <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Modal Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End Nouveaux Recrutements Modal-->
+
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Change Fonctions based on the selected département
+        function updateFonctions(departementSelect) {
+            var selectedDepartementId = departementSelect.value;
+            var fonctionSelect = document.getElementById("fonction");
+
+            // Clear the existing options
+            while (fonctionSelect.options.length > 1) {
+                fonctionSelect.options.remove(1);
+            }
+
+            // Deserialize the model data
+            var modelData = @Html.Raw(Json.Serialize(ViewBag.ListDepartements));
+
+            // Find the selected departement in the model data
+            var selectedDepartement = modelData.find(departement => departement.id == selectedDepartementId);
+
+            if (selectedDepartement) {
+                // Populate the city dropdown based on the selected country
+                selectedDepartement.fonctions.forEach(fonction => {
+                    var option = document.createElement("option");
+                    option.value = fonction.id;
+                    option.text = fonction.nom;
+                    fonctionSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateNouveauxFonctions(departementSelect) {
+            var selectedDepartementId = departementSelect.value;
+            var fonctionSelect = document.getElementById("fonctionN");
+
+            // Clear the existing options
+            while (fonctionSelect.options.length > 1) {
+                fonctionSelect.options.remove(1);
+            }
+
+            // Deserialize the model data
+            var modelData = @Html.Raw(Json.Serialize(ViewBag.ListDepartements));
+
+            // Find the selected departement in the model data
+            var selectedDepartement = modelData.find(departement => departement.id == selectedDepartementId);
+
+            if (selectedDepartement) {
+                // Populate the city dropdown based on the selected country
+                selectedDepartement.fonctions.forEach(fonction => {
+                    var option = document.createElement("option");
+                    option.value = fonction.id;
+                    option.text = fonction.nom;
+                    fonctionSelect.appendChild(option);
+                });
+            }
+        }
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "Êtes-vous sûr de vouloir supprimer ce recrutement?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Recrutement/SupprimerRecrutement?id=" + id;
+                }
+            })
+        });
+
+        $('body').on('click', '.btnDetails', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/Recrutement/GetDetailsRecrutement',
+                method: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    $('#modalBody').html(result);
+                    $('#btnShowModal').click();
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            
+            (function fetchData() {
+                var url = window.location;
+
+                var urlParams = new URLSearchParams(new URL(url).search);
+                var nomComplet = urlParams.get('NomComplet');
+                var dateDebut = urlParams.get('DateDebut');
+                var dateFin = urlParams.get('DateFin');
+                var departement = urlParams.get('Departement');
+                var fonction = urlParams.get('Fonction');
+
+                if (departement != null) {
+                    $('#departement').val(departement);
+                }
+
+                if (fonction != null) {
+                    $('#fonction').val(fonction);
+                }
+
+                $('#nomComplet').val(nomComplet);
+                $('#dateDebut').val(dateDebut);
+                $('#dateFin').val(dateFin);
+                $('#departement').trigger('change');
+            })();
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('#btnNouveauxRecrutements').click(function () {
+            $('#btnShowNouveauxRecrutementsModal').click();
+        });
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@using PortailRH.BLL.Dtos.Recrutement
+@model GetRecrutementDto
+
+<div>
+
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Nom</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Nom
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Prenom</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Prenom
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Email
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Téléphone</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Telephone
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Date De Création</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.DateCreation
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Département</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Departement
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">Fonction</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        @Model.Fonction
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6 class="mb-0">CV</h6>
+                    </div>
+                    <div class="col-sm-6 text-success text-end">
+                        <a href="~/documents/cv/@Model.Document">@string.Concat(Model.Nom, "_", Model.Prenom, "_CV")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
