@@ -25,6 +25,7 @@
         </div>
         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
             <form method="get" action="/Employe/AnciensEmployes">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="@(Model?.Pagining?.CurrentPage ?? 1)">
                 <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
                     <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
                     <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
@@ -94,7 +95,7 @@
                     ? 1
                     : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
                     ) +
-                    "'>Previous</a>"
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Précédente</a>"
                     )
                 </li>
 
@@ -105,13 +106,13 @@
                         if (Model.Pagining.CurrentPage == i)
                         {
                             <li class="page-item">
-                                <a class="page-link activePageNumber" href="/Employe/GetFilteredEmployes?CurrentPage=@i">@i</a>
+                                <a class="page-link activePageNumber" href="/Employe/GetFilteredEmployes?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
                             </li>
                         }
                         else
                         {
                             <li class="page-item">
-                                <a class="page-link" href="/Employe/GetFilteredEmployes?CurrentPage=@i">@i</a>
+                                <a class="page-link" href="/Employe/GetFilteredEmployes?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
                             </li>
                         }
                     }
@@ -125,7 +126,7 @@
                     ? (Model?.Pagining?.TotalPages ?? 1)
                     : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
                     ) +
-                    "'>Next</a>"
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Suivante</a>"
                     )
                 </li>
             </ul>

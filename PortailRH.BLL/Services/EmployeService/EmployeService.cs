@@ -397,5 +397,21 @@ namespace PortailRH.BLL.Services.EmployeService
 
             await _unitOfWork.CommitAsync();
         }
+
+        /// <summary>
+        /// Get Employes For Conge
+        /// </summary>
+        /// <returns>ICollection<EmployeForCongeDto></returns>
+        public async Task<ICollection<EmployeForCongeDto>> GetEmployesForConge()
+        {
+            var employes = await _employeRepository.GetListAsync(x => x.EstSupprime == false);
+
+            return employes.Select(x => new EmployeForCongeDto
+            {
+                CIN = x.Cin,
+                Nom = x.Nom,
+                Prenom = x.Prenom,
+            }).ToList();
+        }
     }
 }

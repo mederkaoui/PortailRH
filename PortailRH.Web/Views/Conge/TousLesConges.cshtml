@@ -1,5 +1,7 @@
-﻿@using PortailRH.BLL.Dtos.Employe
-@model EmployePaginatedListDto
+﻿@using PortailRH.BLL.Dtos.Conge
+@using PortailRH.BLL.Dtos.Shared
+@model DemandesCongesPaginatedListDto
+
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -14,7 +16,7 @@
 <div class="table-settings mb-4">
     <div class="row align-items-center justify-content-between">
         <div class="col col-md-6 col-lg-3 col-xl-4">
-            <form action="/Employe/GetFilteredEmployes" method="get">
+            <form action="/Conge/TousLesConges" method="get">
                 <div class="input-group me-2 me-lg-3 fmxw-400">
                     <span class="input-group-text">
                         <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
@@ -24,7 +26,7 @@
             </form>
         </div>
         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-           <form method="get" action="/Employe/GetFilteredEmployes">
+            <form method="get" action="/Conge/TousLesConges">
                 <input type="hidden" id="currentPage" name="CurrentPage" value="@(Model?.Pagining?.CurrentPage ?? 1)">
                 <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
                     <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
@@ -38,43 +40,34 @@
     </div>
 </div>
 
-
 <div class="card card-body border-0 shadow table-wrapper table-responsive">
     <table class="table table-hover employesTable">
-        <thead class="thead-light">
+        <thead>
             <tr>
-                <th class="border-0 rounded-start">Nom</th>
+                <th class="border-0 rounded-start">CIN</th>
+                <th class="border-0">Nom</th>
                 <th class="border-0">Prenom</th>
-                <th class="border-0">CIN</th>
-                <th class="border-0">Email</th>
-                <th class="border-0">Téléphone</th>
-                <th class="border-0">Opérations</th>
+                <th class="border-0">Date Début</th>
+                <th class="border-0">Date Fin</th>
+                <th class="border-0">Statut</th>
+                <th class="border-0">Supprimer</th>
             </tr>
         </thead>
         <tbody>
-            @if (Model?.Employes != null)
+            @if (Model?.Demandes != null)
             {
-                foreach (var employe in Model.Employes)
+                foreach (var demande in Model.Demandes)
                 {
                     <tr>
-                        <td class="border-0">
-                            <a href="#" class="d-flex align-items-center">
-                                <img class="me-2 image table-image rounded-circle" alt="Image placeholder" src="@(employe.Photo != null ? $"../images/EmployeImages/{employe.Photo}" : "../images/EmployeImages/profile.png")" />
-                                <div><span class="h6">@employe.Nom</span></div>
-                            </a>
-                        </td>
-                        <td class="border-0 fw-bold">@employe.Prenom</td>
-                        <td class="border-0 fw-bold">@employe.CIN</td>
-                        <td class="border-0 fw-bold">@employe.Email</td>
-                        <td class="border-0">@employe.Telephone</td>
-                        <td class="border-0 fw-bold">
-                            <button class="btn btn-sm btnDetails btn-warning" data-cin="@employe.CIN">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                            <a class="btn btn-sm btn-success" href="/Employe/ModifierEmploye?cin=@employe.CIN">
-                                <i class="fa-solid fa-user-pen" style="color: #ffffff;"></i>
-                            </a>
-                            <button class="btn btn-sm btn-danger btnDelete" data-cin="@employe.CIN">
+                        <td class="border-0 fw-bold">@demande.CIN</td>
+                        <td class="border-0 fw-bold">@demande.Nom</td>
+                        <td class="border-0 fw-bold">@demande.Prenom</td>
+                        <td class="border-0 fw-bold">@Convert.ToDateTime(demande.DateDebut).ToShortDateString()</td>
+                        <td class="border-0 fw-bold">@Convert.ToDateTime(demande.DateFin).ToShortDateString()</td>
+                        <td class="border-0 fw-bold @(demande?.Status?.ToString() == CongeStatusEnum.Accepter.ToString() ? "text-success" : (demande?.Status?.ToString() == CongeStatusEnum.OnAttends.ToString() ? "text-secondary" : "text-danger"))">@demande.Status</td>
+
+                        <td class="border-0 fw-bold text-center">
+                            <button class="btn btn-sm btn-danger btnDelete" data-id="@demande.Id">
                                 <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
                             </button>
                         </td>
@@ -90,7 +83,7 @@
             <ul class="pagination mb-0">
                 <li class="page-item">
                     @Html.Raw(
-                    "<a class='page-link' href='/Employe/GetFilteredEmployes?CurrentPage=" +
+                    "<a class='page-link' href='/Conge/TousLesConges?CurrentPage=" +
                     (
                     ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
                     ? 1
@@ -107,13 +100,13 @@
                         if (Model.Pagining.CurrentPage == i)
                         {
                             <li class="page-item">
-                                <a class="page-link activePageNumber" href="/Employe/GetFilteredEmployes?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                                <a class="page-link activePageNumber" href="/Conge/TousLesConges?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
                             </li>
                         }
                         else
                         {
                             <li class="page-item">
-                                <a class="page-link" href="/Employe/GetFilteredEmployes?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                                <a class="page-link" href="/Conge/TousLesConges?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
                             </li>
                         }
                     }
@@ -121,7 +114,7 @@
 
                 <li class="page-item">
                     @Html.Raw(
-                    "<a class='page-link' href='/Employe/GetFilteredEmployes?CurrentPage=" +
+                    "<a class='page-link' href='/Conge/TousLesConges?CurrentPage=" +
                     (
                     ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
                     ? (Model?.Pagining?.TotalPages ?? 1)
@@ -139,40 +132,29 @@
 
 <!--Start Modal-->
 
-<div class="row">
-    <div class="col-12 mb-4">
-        <div class="card border-0 shadow">
-            <div class="card-body">
-                <div class="row d-block mt-4">
-                    <div class="col-lg-4">
-                        <!-- Button Modal -->
-                        <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#modal-default">Default</button>
-                        <!-- Modal Content -->
-                        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h2 class="h6 modal-title">Employé Détails</h2>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body" id="modalBody">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End of Modal Content -->
-                    </div>
+<div class="col-lg-4">
+    <!-- Button Modal -->
+    <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#modal-default">Default</button>
+    <!-- Modal Content -->
+    <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Employé Détails</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- End of Modal Content -->
 </div>
 
 <!--End Modal-->
-
 @section Scripts {
     <script>
         const swalWithBootstrapButtons = Swal.mixin({
@@ -184,10 +166,10 @@
         });
 
         $('body').on('click', '.btnDelete', function () {
-            var cin = $(this).data('cin');
+            var id = $(this).data('id');
             Swal.fire({
                 title: 'Supprimer',
-                text: "êtes-vous sûr de vouloir supprimer cet employé?",
+                text: "Êtes-vous sûr de vouloir supprimer ce congé ?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -196,7 +178,7 @@
                 cancelButtonText: 'Non, Annuler!',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "/Employe/DeleteEmploye?cin=" + cin;
+                    window.location.href = "/Conge/DeleteConge?id=" + id;
                 }
             })
         });
@@ -234,18 +216,5 @@
             }
         }
 
-        $('body').on('click', '.btnDetails', function () {
-            var cin = $(this).data('cin');
-
-            $.ajax({
-                url: '/Employe/GetDetailsEmploye',
-                method: 'GET',
-                data: { cin: cin },
-                success: function (result) {
-                    $('#modalBody').html(result);
-                    $('#btnShowModal').click();
-                }
-            });
-        });
     </script>
 }

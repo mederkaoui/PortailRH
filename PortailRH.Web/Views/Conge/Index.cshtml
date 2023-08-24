@@ -1,238 +1,473 @@
-﻿@section Styles {
+﻿<!--Select Search Style-->
+@section Styles {
     <style>
+  
+.dropdownsearch{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+    font-family: 'Ubuntu', sans-serif;
 
-        body {
-            margin-bottom: 40px;
-            margin-top: 40px;
-            text-align: center;
-            font-size: 14px;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        #wrap {
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        #external-events {
-            float: left;
-            width: 150px;
-            padding: 0 10px;
-            text-align: left;
-        }
-
-            #external-events h4 {
-                font-size: 16px;
-                margin-top: 0;
-                padding-top: 1em;
-            }
-
-        .external-event { /* try to mimick the look of a real event */
-            margin: 10px 0;
-            padding: 2px 4px;
-            background: #3366CC;
-            color: #fff;
-            font-size: .85em;
-            cursor: pointer;
-        }
-
-        #external-events p {
-            margin: 1.5em 0;
-            font-size: 11px;
-            color: #666;
-        }
-
-            #external-events p input {
-                margin: 0;
-                vertical-align: middle;
-            }
-
-        #calendar {
-            /* 		float: right; */
-            margin: 0 auto;
-            width: 100%;
-            background-color: #FFFFFF;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px #C3C3C3;
-            -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-            -moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-            box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        }
-    </style>
-
-    <link href="~/css/calendar.css" rel="stylesheet" />
+}
+select {
+    display: none !important;
 }
 
+.dropdown-select {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#40FFFFFF', endColorstr='#00FFFFFF', GradientType=0);
+    background-color: #fff;
+    border-radius: 6px;
+    border: solid 1px #eee;
+    box-shadow: 0px 2px 5px 0px rgba(155, 155, 155, 0.5);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    height: 42px;
+    line-height: 40px;
+    outline: none;
+    padding-left: 18px;
+    padding-right: 30px;
+    position: relative;
+    text-align: left !important;
+    transition: all 0.2s ease-in-out;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    width: auto;
 
-<div id='wrap'>
+}
 
-	<div id='calendar'></div>
+.dropdown-select:focus {
+    background-color: #fff;
+}
 
-	<div style='clear:both'></div>
+.dropdown-select:hover {
+    background-color: #fff;
+}
+
+.dropdown-select:active,
+.dropdown-select.open {
+    background-color: #fff !important;
+    border-color: #bbb;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) inset;
+}
+
+.dropdown-select:after {
+    height: 0;
+    width: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #777;
+    -webkit-transform: origin(50% 20%);
+    transform: origin(50% 20%);
+    transition: all 0.125s ease-in-out;
+    content: '';
+    display: block;
+    margin-top: -2px;
+    pointer-events: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+}
+
+.dropdown-select.open:after {
+    -webkit-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+}
+
+.dropdown-select.open .list {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dropdown-select.open .option {
+    cursor: pointer;
+}
+
+.dropdown-select.wide {
+    width: 100%;
+}
+
+.dropdown-select.wide .list {
+    left: 0 !important;
+    right: 0 !important;
+}
+
+.dropdown-select .list {
+    box-sizing: border-box;
+    transition: all 0.15s cubic-bezier(0.25, 0, 0.25, 1.75), opacity 0.1s linear;
+    -webkit-transform: scale(0.75);
+    transform: scale(0.75);
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 0;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.09);
+    background-color: #fff;
+    border-radius: 6px;
+    margin-top: 4px;
+    padding: 3px 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+    max-height: 250px;
+    overflow: auto;
+    border: 1px solid #ddd;
+}
+
+.dropdown-select .list:hover .option:not(:hover) {
+    background-color: transparent !important;
+}
+.dropdown-select .dd-search{
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0.5rem;
+}
+
+.dropdown-select .dd-searchbox{
+    width: 100%;
+    height: 40px;
+  padding:0.5rem;
+  border:1px solid #999;
+  border-color:#999;
+  border-radius:4px;
+  outline:none;
+}
+.dropdown-select .dd-searchbox:focus{
+  border-color:#12CBC4;
+}
+
+.dropdown-select .list ul {
+    padding: 0;
+}
+
+.dropdown-select .option {
+    cursor: default;
+    font-weight: 400;
+    line-height: 40px;
+    outline: none;
+    padding-left: 18px;
+    padding-right: 29px;
+    text-align: left;
+    transition: all 0.2s;
+    list-style: none;
+}
+
+.dropdown-select .option:hover,
+.dropdown-select .option:focus {
+    background-color: #f6f6f6 !important;
+}
+
+.dropdown-select .option.selected {
+    font-weight: 600;
+    color: #12cbc4;
+}
+
+.dropdown-select .option.selected:focus {
+    background: #f6f6f6;
+}
+
+.dropdown-select a {
+    color: #aaa;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown-select a:hover {
+    color: #666;
+}
+
+  </style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div id='calendar'></div>
+
+<div class="d-flex justify-content-end mt-5">
+    <button class="btn btn-twitter text-white" data-bs-toggle="modal" data-bs-target="#modal-default">Ajouter Congé</button>
 </div>
 
-@section Scripts{
-	<script>
+<!--Start Modal-->
 
-			$(document).ready(function () {
-				var date = new Date();
-				var d = date.getDate();
-				var m = date.getMonth();
-				var y = date.getFullYear();
+<div class="col-lg-4">
+    <!-- Modal Content -->
+    <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Ajouter Congé</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/Conge/AjouterConge" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <label for="dynamic_select">Employé</label>
+                            <div class="dropdownsearch input-group">
+                                <div class="options mb-4 w-100">
+                                    <select id="dynamic_select" name="CIN">
+                                        @if (ViewBag.Employes != null)
+                                        {
+                                            foreach (var employe in ViewBag.Employes)
+                                            {
+                                                <option value="@employe.CIN">@employe.CIN - @employe.Prenom @employe.Nom</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-				/*  className colors
+                        <div class="col mb-3">
+                            <label for="dateDebut">Date Debut</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="DateDebut" id="dateDebut" type="text" autocomplete="off" placeholder="dd/mm/yyyy" required data-val="true" />
+                            </div>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="DateDebut" data-valmsg-replace="true"></span>
+                        </div>
 
-				className: default(transparent), important(red), chill(pink), success(green), info(blue)
+                        <div class="col mb-3">
+                            <label for="dateFin">Date Fin</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="DateFin" id="dateFin" type="text" autocomplete="off" placeholder="dd/mm/yyyy" required data-val="true" />
+                            </div>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="DateFin" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of Modal Content -->
+</div>
 
-				*/
+<!--End Modal-->
 
+@section Scripts {
+    <script src="./js/calendar.js"></script>
+    
+    <!--Global Script-->
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
 
-				/* initialize the external events
-				-----------------------------------------------------------------*/
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
 
-				$('#external-events div.external-event').each(function () {
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
 
-					// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-					// it doesn't need to have a start or end
-					var eventObject = {
-						title: $.trim($(this).text()) // use the element's text as the event title
-					};
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
 
-					// store the Event Object in the DOM element so we can get to it later
-					$(this).data('eventObject', eventObject);
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
 
-					// make the event draggable using jQuery UI
-					$(this).draggable({
-						zIndex: 999,
-						revert: true,      // will cause the event to go back to its
-						revertDuration: 0  //  original position after the drag
-					});
+    </script>
 
-				});
+    <!--Script For Calendar-->
+    <script>
 
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
 
-				/* initialize the calendar
-				-----------------------------------------------------------------*/
+            var conges = @Html.Raw(Json.Serialize(ViewBag.Conges));
+            var allEvents = [];
 
-				var calendar = $('#calendar').fullCalendar({
-					header: {
-						left: 'title',
-						center: 'agendaDay,agendaWeek,month',
-						right: 'prev,next today'
-					},
-					editable: true,
-					firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
-					selectable: true,
-					defaultView: 'month',
+            conges.forEach(conge => {
+                allEvents.push({
+                    id: conge.id,
+                    title: conge.employeNomComplet,
+                    start: new Date(conge.dateDebut),
+                    end: new Date(conge.dateFin),
+                    allDay: false,
+                    className: 'info'
+                });
+            });
 
-					axisFormat: 'h:mm',
-					columnFormat: {
-						month: 'ddd',    // Mon
-						week: 'ddd d', // Mon 7
-						day: 'dddd M/d',  // Monday 9/7
-						agendaDay: 'dddd d'
-					},
-					titleFormat: {
-						month: 'MMMM yyyy', // September 2009
-						week: "MMMM yyyy", // September 2009
-						day: 'MMMM yyyy'	// Tuesday, Sep 8, 2009
-					},
-					allDaySlot: false,
-					selectHelper: true,
-					select: function (start, end, allDay) {
-						var title = prompt('Event Title:');
-						if (title) {
-							calendar.fullCalendar('renderEvent',
-								{
-									title: title,
-									start: start,
-									end: end,
-									allDay: allDay
-								},
-								true // make the event "stick"
-							);
-						}
-						calendar.fullCalendar('unselect');
-					},
-					droppable: true, // this allows things to be dropped onto the calendar !!!
-					drop: function (date, allDay) { // this function is called when something is dropped
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                initialDate: new Date('@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")'),
+                navLinks: true, // can click day/week names to navigate views
+                businessHours: true, // display business hours
+                editable: true,
+                selectable: true,
+                events: allEvents
+            });
 
-						// retrieve the dropped element's stored Event Object
-						var originalEventObject = $(this).data('eventObject');
+            calendar.render();
+        });
 
-						// we need to copy it, so that multiple events don't have a reference to the same object
-						var copiedEventObject = $.extend({}, originalEventObject);
+    </script>
 
-						// assign it the date that was reported
-						copiedEventObject.start = date;
-						copiedEventObject.allDay = allDay;
+    <!--Select Search Logic-->
+    <script>
 
-						// render the event on the calendar
-						// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-						$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+        function create_custom_dropdowns() {
+            $('#dynamic_select').each(function (i, select) {
+                if (!$(this).next().hasClass('dropdown-select')) {
+                    $(this).after('<div class="dropdown-select wide ' + ($(this).attr('class') || '') + '" tabindex="0"><span class="current"></span><div class="list"><ul></ul></div></div>');
+                    var dropdown = $(this).next();
+                    var options = $(select).find('option');
+                    var selected = $(this).find('option:selected');
+                    dropdown.find('.current').html(selected.data('display-text') || selected.text());
+                    options.each(function (j, o) {
+                        var display = $(o).data('display-text') || '';
+                        dropdown.find('ul').append('<li class="option ' + ($(o).is(':selected') ? 'selected' : '') + '" data-value="' + $(o).val() + '" data-display-text="' + display + '">' + $(o).text() + '</li>');
+                    });
+                }
+            });
 
-						// is the "remove after drop" checkbox checked?
-						if ($('#drop-remove').is(':checked')) {
-							// if so, remove the element from the "Draggable Events" list
-							$(this).remove();
-						}
+            $('.dropdown-select ul').before('<div class="dd-search"><input id="txtSearchValue" autocomplete="off" onkeyup="filter()" class="dd-searchbox" type="text"></div>');
+        }
 
-					},
+        // Event listeners
 
-					events: [
-						{
-							title: 'All Day Event',
-							start: new Date(y, m, 1),
-						className: 'important'
+        // Open/close
+        $(document).on('click', '.dropdown-select', function (event) {
+            if ($(event.target).hasClass('dd-searchbox')) {
+                return;
+            }
+            $('.dropdown-select').not($(this)).removeClass('open');
+            $(this).toggleClass('open');
+            if ($(this).hasClass('open')) {
+                $(this).find('.option').attr('tabindex', 0);
+                $(this).find('.selected').focus();
+            } else {
+                $(this).find('.option').removeAttr('tabindex');
+                $(this).focus();
+            }
+        });
 
-						},
-						{
-							id: 999,
-							title: 'Repeating Event',
-							start: new Date(y, m, d - 3, 16, 0),
-							allDay: false,
-							className: 'info'
-						},
-						{
-							id: 999,
-							title: 'Repeating Event',
-							start: new Date(y, m, d + 4, 16, 0),
-							allDay: false,
-							className: 'info'
-						},
-						{
-							title: 'Meeting',
-							start: new Date(y, m, d, 10, 30),
-							allDay: false,
-							className: 'important'
-						},
-						{
-							title: 'Lunch',
-							start: new Date(y, m, d, 12, 0),
-							end: new Date(y, m, d, 14, 0),
-							allDay: false,
-							className: 'important'
-						},
-						{
-							title: 'Birthday Party',
-							start: new Date(y, m, d + 1, 19, 0),
-							end: new Date(y, m, d + 1, 22, 30),
-							allDay: false,
-						},
-						{
-							title: 'Click for Google',
-							start: new Date(y, m, 28),
-							end: new Date(y, m, 29),
-							url: 'https://ccp.cloudaccess.net/aff.php?aff=5188',
-							className: 'success'
-						}
-					],
-				});
+        // Close when clicking outside
+        $(document).on('click', function (event) {
+            if ($(event.target).closest('.dropdown-select').length === 0) {
+                $('.dropdown-select').removeClass('open');
+                $('.dropdown-select .option').removeAttr('tabindex');
+            }
+            event.stopPropagation();
+        });
 
+        function filter() {
+            var valThis = $('#txtSearchValue').val();
+            $('.dropdown-select ul > li').each(function () {
+                var text = $(this).text();
+                (text.toLowerCase().indexOf(valThis.toLowerCase()) > -1) ? $(this).show() : $(this).hide();
+            });
+        };
+        // Search
 
-			});
+        // Option click
+        $(document).on('click', '.dropdown-select .option', function (event) {
+            $(this).closest('.list').find('.selected').removeClass('selected');
+            $(this).addClass('selected');
+            var text = $(this).data('display-text') || $(this).text();
+            $(this).closest('.dropdown-select').find('.current').text(text);
+            $(this).closest('.dropdown-select').prev('select').val($(this).data('value')).trigger('change');
+        });
 
-		</script>
+        // Keyboard events
+        $(document).on('keydown', '.dropdown-select', function (event) {
+            var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find('.list .option.selected')[0]);
+            // Space or Enter
+            //if (event.keyCode == 32 || event.keyCode == 13) {
+            if (event.keyCode == 13) {
+                if ($(this).hasClass('open')) {
+                    focused_option.trigger('click');
+                } else {
+                    $(this).trigger('click');
+                }
+                return false;
+                // Down
+            } else if (event.keyCode == 40) {
+                if (!$(this).hasClass('open')) {
+                    $(this).trigger('click');
+                } else {
+                    focused_option.next().focus();
+                }
+                return false;
+                // Up
+            } else if (event.keyCode == 38) {
+                if (!$(this).hasClass('open')) {
+                    $(this).trigger('click');
+                } else {
+                    var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find('.list .option.selected')[0]);
+                    focused_option.prev().focus();
+                }
+                return false;
+                // Esc
+            } else if (event.keyCode == 27) {
+                if ($(this).hasClass('open')) {
+                    $(this).trigger('click');
+                }
+                return false;
+            }
+        });
 
-    <script src="~/js/calendar.js"></script>
+        $(document).ready(function () {
+            create_custom_dropdowns();
+        });
+    </script>
+
 }

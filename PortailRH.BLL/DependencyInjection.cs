@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PortailRH.BLL.Services.CongeService;
 using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.BLL.Services.RecrutementService;
@@ -22,6 +23,7 @@ namespace PortailRH.BLL
             services.AddScoped<ITypeContratService, TypeContratService>();
             services.AddScoped<IRecrutementService, RecrutementService>();
             services.AddScoped<IDepartementService, DepartementService>();
+            services.AddScoped<ICongeService, CongeService>();
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using PortailRH.BLL.Dtos.Employe;
+using PortailRH.BLL.Dtos.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,5 +30,7 @@ namespace PortailRH.BLL.Services.EmployeService
         public Task<EmployePaginatedListDto> GetAnciensEmployesPaginatedList(EmployeSearchDto searchDto);
 
         public Task NewContract(EmployeNouveauContratDto nouveauContratDto);
+
+        public Task<ICollection<EmployeForCongeDto>> GetEmployesForConge();
     }
 }
