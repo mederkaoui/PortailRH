@@ -43,7 +43,7 @@ public partial class PortailrhContext : DbContext
 
     public virtual DbSet<Pay> Pays { get; set; }
 
-    public virtual DbSet<Présence> Présences { get; set; }
+    public virtual DbSet<Presence> Presences { get; set; }
 
     public virtual DbSet<Recrutement> Recrutements { get; set; }
 
@@ -371,11 +371,9 @@ public partial class PortailrhContext : DbContext
                 .HasColumnName("NOM");
         });
 
-        modelBuilder.Entity<Présence>(entity =>
+        modelBuilder.Entity<Presence>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_PRESENCE");
-
-            entity.ToTable("PRÉSENCE");
+            entity.ToTable("PRESENCE");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CinEmploye)
@@ -387,7 +385,7 @@ public partial class PortailrhContext : DbContext
             entity.Property(e => e.HeureEntree).HasColumnName("HEURE_ENTREE");
             entity.Property(e => e.HeureSortie).HasColumnName("HEURE_SORTIE");
 
-            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Présences)
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.Presences)
                 .HasForeignKey(d => d.CinEmploye)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PRESENCE_EMPLOYE");

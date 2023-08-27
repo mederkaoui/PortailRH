@@ -61,5 +61,5 @@ public partial class Employe
 
     public virtual ICollection<Paiement> Paiements { get; set; } = new List<Paiement>();
 
-    public virtual ICollection<Présence> Présences { get; set; } = new List<Présence>();
+    public virtual ICollection<Presence> Presences { get; set; } = new List<Presence>();
 }

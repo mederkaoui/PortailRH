@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PortailRH.BLL.Dtos.Presence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace PortailRH.BLL.Services.PresenceService
     /// </summary>
     public interface IPresenceService
     {
+        public Task<ICollection<PresenceDto>> GetPresencesByMonths(PresenceSearchDto searchDto);
     }
 }

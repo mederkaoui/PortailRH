@@ -3,6 +3,7 @@ using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.CongeService;
 using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.EmployeService;
+using PortailRH.BLL.Services.PresenceService;
 using PortailRH.BLL.Services.RecrutementService;
 using PortailRH.BLL.Services.TypeContratService;
 using System;
@@ -26,6 +27,7 @@ namespace PortailRH.BLL
             services.AddScoped<IDepartementService, DepartementService>();
             services.AddScoped<ICongeService, CongeService>();
             services.AddScoped<IAbsenceService, AbsenceService>();
+            services.AddScoped<IPresenceService, PresenceService>();
 
             return services;
         }

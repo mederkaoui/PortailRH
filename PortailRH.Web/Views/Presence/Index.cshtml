@@ -1,0 +1,165 @@
+﻿@using PortailRH.BLL.Dtos.Presence
+@model ICollection<PresenceDto>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+
+<div class="table-settings mb-4">
+    <form action="/Presence" method="get">
+        <div class="row align-items-center justify-content-between">
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="searchQuery">CIN Ou Nom Complet</label>
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" id="searchQuery" name="SearchQuery" class="form-control" placeholder="Rechercher par CIN ou nom complet">
+                </div>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="mois">Mois</label>
+                <select class="form-select" id="mois" name="Mois">
+                    <option value="01" selected="@(DateTime.Now.Month == 1 ? "Selected" : null)">Janvier</option>
+                    <option value="02" selected="@(DateTime.Now.Month == 2 ? "Selected" : null)">Février</option>
+                    <option value="0" selected="@(DateTime.Now.Month == 3 ? "Selected" : null)">Mars</option>
+                    <option value="04" selected="@(DateTime.Now.Month == 4 ? "Selected" : null)">Avril</option>
+                    <option value="05" selected="@(DateTime.Now.Month == 5 ? "Selected" : null)">Mai</option>
+                    <option value="06" selected="@(DateTime.Now.Month == 6 ? "Selected" : null)">Juin</option>
+                    <option value="07" selected="@(DateTime.Now.Month == 7 ? "Selected" : null)">Juillet</option>
+                    <option value="08" selected="@(DateTime.Now.Month == 8 ? "Selected" : null)">Août</option>
+                    <option value="09" selected="@(DateTime.Now.Month == 9 ? "Selected" : null)">Septembre</option>
+                    <option value="10" selected="@(DateTime.Now.Month == 10 ? "Selected" : null)">Octobre</option>
+                    <option value="11" selected="@(DateTime.Now.Month == 11 ? "Selected" : null)">Novembre</option>
+                    <option value="12" selected="@(DateTime.Now.Month == 12 ? "Selected" : null)">Décembre</option>
+
+                </select>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="annee">Année</label>
+                <select class="form-select" id="annee" name="Annee">
+                    @for (int i = 2000; i < 2050; i++)
+                    {
+                        <option value="@i" selected="@(i == DateTime.Now.Year ? "Selected" : null)">@i</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <button type="submit" class="btn btn-outline-primary w-100" style="margin-top: 30px">Recherche</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead>
+            <tr>
+                <th>CIN</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Mois</th>
+                <th>Total Heures D'bsence</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var presence in Model)
+                {
+                    <tr>
+                        <td>@presence.CIN</td>
+                        <td>@presence.Nom</td>
+                        <td>@presence.Prenom</td>
+                        <td>@presence.Mois</td>
+                        <td>@presence.HeuresAbsence</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('#btnNouveauxRecrutements').click(function () {
+            $('#btnShowNouveauxRecrutementsModal').click();
+        });
+
+        //Fetch Search Data
+        $(document).ready(function () {
+
+            (function fetchData() {
+                var url = window.location;
+
+                var urlParams = new URLSearchParams(new URL(url).search);
+                var searchQuery = urlParams.get('SearchQuery');
+                var mois = urlParams.get('Mois');
+                var annee = urlParams.get('Annee');
+
+                if (searchQuery != null && searchQuery != '') {
+                    $('#searchQuery').val(searchQuery);
+                }
+                
+                if (mois != null && mois != '') {
+                    $('#mois').val(mois);
+                }
+
+                if (annee != null && annee != '') {
+                    $('#annee').val(annee);
+                }
+            })();
+        });
+    </script>
+}
