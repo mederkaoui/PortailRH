@@ -173,7 +173,7 @@ namespace PortailRH.Web.Controllers
             {
                 TempData["ErrorMessage"] = "Une erreur s'est produite lors de l'obtenir les details de l'employé.";
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
         }
 

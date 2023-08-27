@@ -75,7 +75,7 @@
                                 <i class="fa-solid fa-user-pen" style="color: #ffffff;"></i>
                             </a>
                             <button class="btn btn-sm btn-danger btnDelete" data-cin="@employe.CIN">
-                                <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                <i class="fa-solid fa-box-archive" style="color: #ffffff;"></i>
                             </button>
                         </td>
                     </tr>
@@ -186,8 +186,8 @@
         $('body').on('click', '.btnDelete', function () {
             var cin = $(this).data('cin');
             Swal.fire({
-                title: 'Supprimer',
-                text: "êtes-vous sûr de vouloir supprimer cet employé?",
+                title: 'Archiver',
+                text: "êtes-vous sûr de vouloir archiver cet employé?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

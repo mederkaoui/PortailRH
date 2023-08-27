@@ -89,6 +89,11 @@ public partial class PortailrhContext : DbContext
             entity.HasOne(d => d.IdDocumentNavigation).WithMany(p => p.Absences)
                 .HasForeignKey(d => d.IdDocument)
                 .HasConstraintName("FK_ABSENCE_DOCUMENT");
+
+            entity.HasOne(d => d.IdTypeAbsenceNavigation).WithMany(p => p.Absences)
+                .HasForeignKey(d => d.IdTypeAbsence)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ABSENCE_TYPE_ABSENCE");
         });
 
         modelBuilder.Entity<Annonce>(entity =>

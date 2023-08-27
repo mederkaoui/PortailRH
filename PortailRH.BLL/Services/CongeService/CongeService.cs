@@ -77,7 +77,7 @@ namespace PortailRH.BLL.Services.CongeService
             var conges = await _congeRepository.GetPaginatedListAsync(
                                                             currentPage: searchDto.CurrentPage,
                                                             itemsPerPage: searchDto.ItemsPerPage,
-                                                            predicate: x => string.Concat(x.CinEmployeNavigation.Prenom, " ", x.CinEmployeNavigation.Nom).Contains(searchDto.SearchQuery ?? string.Empty),
+                                                            predicate: x => (x.CinEmploye.Contains(searchDto.SearchQuery ?? string.Empty) || string.Concat(x.CinEmployeNavigation.Prenom, " ", x.CinEmployeNavigation.Nom).Contains(searchDto.SearchQuery ?? string.Empty)),
                                                             include: inc => inc.Include(x => x.CinEmployeNavigation),
                                                             orderBy: x => x.OrderByDescending(x => x.DateDebut)
                                                         );
@@ -113,9 +113,9 @@ namespace PortailRH.BLL.Services.CongeService
 			var conges = await _congeRepository.GetPaginatedListAsync(
 															currentPage: searchDto.CurrentPage,
 															itemsPerPage: searchDto.ItemsPerPage,
-															predicate: x => x.Statut != null && x.Statut == CongeStatusEnum.OnAttends.ToString() && 
-																			string.Concat(x.CinEmployeNavigation.Prenom, " ", x.CinEmployeNavigation.Nom).Contains(searchDto.SearchQuery ?? string.Empty),
-															include: inc => inc.Include(x => x.CinEmployeNavigation),
+															predicate: x => x.Statut != null && x.Statut == CongeStatusEnum.OnAttends.ToString() &&
+                                                                            (x.CinEmploye.Contains(searchDto.SearchQuery ?? string.Empty) || string.Concat(x.CinEmployeNavigation.Prenom, " ", x.CinEmployeNavigation.Nom).Contains(searchDto.SearchQuery ?? string.Empty)),
+                                                            include: inc => inc.Include(x => x.CinEmployeNavigation),
                                                             orderBy: x => x.OrderByDescending(x => x.DateDebut)
                                                         );
 

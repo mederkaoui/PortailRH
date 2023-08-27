@@ -24,4 +24,6 @@ public partial class Absence
     public virtual Employe CinEmployeNavigation { get; set; } = null!;
 
     public virtual Document? IdDocumentNavigation { get; set; }
+
+    public virtual TypeAbsence IdTypeAbsenceNavigation { get; set; } = null!;
 }

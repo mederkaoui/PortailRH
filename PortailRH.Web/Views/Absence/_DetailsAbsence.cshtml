@@ -1,0 +1,103 @@
+﻿@using PortailRH.BLL.Dtos.Absence
+@model AbsenceDto
+
+
+<div class="container">
+    <div class="main-body">
+        
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">CIN</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.CIN
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Nom</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.Nom
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Prenom</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.Prenom
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Type D'Absence</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.TypeAbsence
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Date Debut</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Convert.ToDateTime(Model.DateDebut).ToShortDateString()
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Date Fin</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Convert.ToDateTime(Model.DateFin).ToShortDateString()
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Justifie</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @(Model.Justifie ? "Oui" : "Non")
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Justification</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @(Model.Justifie ? Model.Justification : "-")
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Document</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @if (Model.DocumentNom != null)
+                            {
+                                <a href="./documents/absence/@Model.DocumentNom">@string.Concat(Model.Prenom, "_", Model.Nom, "_Document")</a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

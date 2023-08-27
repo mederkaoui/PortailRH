@@ -6,6 +6,9 @@ using PortailRH.BLL.Services.EmployeService;
 
 namespace PortailRH.Web.Controllers
 {
+    /// <summary>
+    /// CongeController
+    /// </summary>
     public class CongeController : Controller
     {
 		/// <summary>

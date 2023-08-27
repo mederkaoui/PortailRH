@@ -1,0 +1,673 @@
+﻿@using PortailRH.BLL.Dtos.Absence
+@using PortailRH.BLL.Dtos.Shared
+@model AbsencePaginatedListDto
+
+<!--Select Search Style-->
+@section Styles {
+    <style>
+
+        .dropdownsearch {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        #dynamic_select {
+            display: none !important;
+        }
+
+        .dropdown-select {
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%);
+            background-repeat: repeat-x;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#40FFFFFF', endColorstr='#00FFFFFF', GradientType=0);
+            background-color: #fff;
+            border-radius: 6px;
+            border: solid 1px #eee;
+            box-shadow: 0px 2px 5px 0px rgba(155, 155, 155, 0.5);
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            float: left;
+            font-size: 14px;
+            font-weight: normal;
+            height: 42px;
+            line-height: 40px;
+            outline: none;
+            padding-left: 18px;
+            padding-right: 30px;
+            position: relative;
+            text-align: left !important;
+            transition: all 0.2s ease-in-out;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            white-space: nowrap;
+            width: auto;
+        }
+
+        .dropdown-select:focus {
+            background-color: #fff;
+        }
+
+        .dropdown-select:hover {
+            background-color: #fff;
+        }
+
+        .dropdown-select:active,
+        .dropdown-select.open {
+            background-color: #fff !important;
+            border-color: #bbb;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .dropdown-select:after {
+            height: 0;
+            width: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid #777;
+            -webkit-transform: origin(50% 20%);
+            transform: origin(50% 20%);
+            transition: all 0.125s ease-in-out;
+            content: '';
+            display: block;
+            margin-top: -2px;
+            pointer-events: none;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+        }
+
+        .dropdown-select.open:after {
+            -webkit-transform: rotate(-180deg);
+            transform: rotate(-180deg);
+        }
+
+        .dropdown-select.open .list {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dropdown-select.open .option {
+            cursor: pointer;
+        }
+
+        .dropdown-select.wide {
+            width: 100%;
+        }
+
+        .dropdown-select.wide .list {
+            left: 0 !important;
+            right: 0 !important;
+        }
+
+        .dropdown-select .list {
+            box-sizing: border-box;
+            transition: all 0.15s cubic-bezier(0.25, 0, 0.25, 1.75), opacity 0.1s linear;
+            -webkit-transform: scale(0.75);
+            transform: scale(0.75);
+            -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.09);
+            background-color: #fff;
+            border-radius: 6px;
+            margin-top: 4px;
+            padding: 3px 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 999;
+            max-height: 250px;
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+
+        .dropdown-select .list:hover .option:not(:hover) {
+            background-color: transparent !important;
+        }
+
+        .dropdown-select .dd-search {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.5rem;
+        }
+
+        .dropdown-select .dd-searchbox {
+            width: 100%;
+            height: 40px;
+            padding: 0.5rem;
+            border: 1px solid #999;
+            border-color: #999;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .dropdown-select .dd-searchbox:focus {
+            border-color: #12CBC4;
+        }
+
+        .dropdown-select .list ul {
+            padding: 0;
+        }
+
+        .dropdown-select .option {
+            cursor: default;
+            font-weight: 400;
+            line-height: 40px;
+            outline: none;
+            padding-left: 18px;
+            padding-right: 29px;
+            text-align: left;
+            transition: all 0.2s;
+            list-style: none;
+        }
+
+        .dropdown-select .option:hover,
+        .dropdown-select .option:focus {
+            background-color: #f6f6f6 !important;
+        }
+
+        .dropdown-select .option.selected {
+            font-weight: 600;
+            color: #12cbc4;
+        }
+
+        .dropdown-select .option.selected:focus {
+            background: #f6f6f6;
+        }
+
+        .dropdown-select a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .dropdown-select a:hover {
+            color: #666;
+        }
+
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+<span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+
+
+<div class="table-settings mb-4">
+    <div class="row align-items-center">
+        <div class="col col-md-4 col-lg-3 col-xl-4">
+            <label for="searchQuery">Rechercher</label>
+            <form action="/Absence" method="get">
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" name="SearchQuery" id="searchQuery" class="form-control" placeholder="Rechercher par CIN ou nom complet">
+                </div>
+            </form>
+        </div>
+
+        <div class="col col-md-4 col-lg-3 col-xl-4">
+            <form action="/Absence" method="get">
+                <label for="idTypeAbsence">Type D'Absence</label>
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <select class="form-select" name="IdTypeAbsence" id="idTypeAbsence" onchange="this.form.submit();">
+                        @if (ViewBag.Types != null)
+                        {
+                            foreach (var type in ViewBag.Types)
+                            {
+                                <option value="@type.Id">@type.Nom</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-2 col-md-2 text-end mt-4">
+            <form method="get" action="/Absence">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="@(Model?.Pagining?.CurrentPage ?? 1)">
+                <select class="btn btn-primary w-100" name="itemsPerPage" onchange="this.form.submit()">
+                    <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
+                    <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
+                    <option value="30" selected="@(Model?.Pagining?.ItemsPerPage == 30 ? "selected" : null)">30</option>
+                    <option value="50" selected="@(Model?.Pagining?.ItemsPerPage == 50 ? "selected" : null)">50</option>
+                    <option value="100" selected="@(Model?.Pagining?.ItemsPerPage == 100 ? "selected" : null)">100</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="col col-md-2 mt-4 text-end">
+            <button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addAbsenceModal" id="btnNouvelleAbsence">Nouvelle Absence</button>
+        </div>
+    </div>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead>
+            <tr>
+                <th class="border-0 rounded-start">CIN</th>
+                <th class="border-0">Nom</th>
+                <th class="border-0">Prenom</th>
+                <th class="border-0">Date Début</th>
+                <th class="border-0">Date Fin</th>
+                <th class="border-0">Type D'absence'</th>
+                <th class ="border-0">Justifie</th>
+                <th class="border-0">Opérations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Absences != null)
+            {
+                foreach (var absence in Model.Absences)
+                {
+                    <tr>
+                        <td class="border-0 fw-bold">@absence.CIN</td>
+                        <td class="border-0 fw-bold">@absence.Nom</td>
+                        <td class="border-0 fw-bold">@absence.Prenom</td>
+                        <td class="border-0 fw-bold">@Convert.ToDateTime(absence.DateDebut).ToShortDateString()</td>
+                        <td class="border-0 fw-bold">@Convert.ToDateTime(absence.DateFin).ToShortDateString()</td>
+                        <td class="border-0 fw-bold">@absence.TypeAbsence</td>
+                        <td class="border-0 fw-bold">@(absence.Justifie ? "Oui" : "Non")</td>
+
+                        <td class="border-0 fw-bold text-center">
+                            <button class="btn btn-sm btnDetails btn-warning" data-id="@absence.Id">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger btnDelete" data-id="@absence.Id">
+                                <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Absence?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                    ? 1
+                    : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Précédente</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model?.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model?.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/Absence?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/Absence?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Absence?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                    ? (Model?.Pagining?.TotalPages ?? 1)
+                    : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Suivante</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+<!--Start Add Modal-->
+
+<div class="col-lg-4">
+    <div class="modal fade" id="addAbsenceModal" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Ajouter une Absence</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/Absence/AjouterAbsence" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div>
+                            <label for="dynamic_select">Employé</label>
+                            <div class="dropdownsearch input-group">
+                                <div class="options mb-4 w-100">
+                                    <select id="dynamic_select" name="CIN">
+                                        @if (ViewBag.Employes != null)
+                                        {
+                                            foreach (var employe in ViewBag.Employes)
+                                            {
+                                                <option value="@employe.CIN">@employe.CIN - @employe.Prenom @employe.Nom</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="dateDebut">Date Debut</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="DateDebut" id="dateDebut" type="text" autocomplete="off" placeholder="dd/mm/yyyy" required data-val="true" />
+                            </div>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="DateDebut" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="dateFin">Date Fin</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="DateFin" id="dateFin" type="text" autocomplete="off" placeholder="dd/mm/yyyy" required data-val="true" />
+                            </div>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="DateFin" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="my-1 me-2" for="typeAbsence">Type D'absence</label>
+                            <select class="form-select" id="typeAbsence" name="IdTypeAbsence" required>
+                                @if (ViewBag.Types != null)
+                                {
+                                    foreach (var type in ViewBag.Types)
+                                    {
+                                        <option value="@type.Id">@type.Nom</option>
+                                    }
+                                }
+                            </select>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="TypeAbsence" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="chkJustifie">Justifie</label>
+                                <input class="form-check-input" type="checkbox" id="chkJustifie" name="Justifie" checked />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="justification">Justification</label>
+                            <textarea class="form-control" placeholder="Entre votre justification..." id="justification" name="Justification" rows="4"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="document" class="form-label">Télécharger un document</label>
+                            <input class="form-control" type="file" id="document" name="Document" required />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of Modal Content -->
+</div>
+
+<!--End Add Modal-->
+
+<!--Start Modal-->
+
+<div class="col-lg-4">
+    <!-- Button Modal -->
+    <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#modal-default">Default</button>
+    <!-- Modal Content -->
+    <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Absence Détails</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Modal Content -->
+</div>
+
+<!--End Modal-->
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "Êtes-vous sûr de vouloir supprimer cette absence ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Absence/SupprimerAbsence?id=" + id;
+                }
+            })
+        });
+
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('body').on('click', '.btnDetails', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/Absence/GetDetailsAbsence',
+                method: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#modalBody').html(result);
+                        $('#btnShowModal').click();
+                    }
+                }
+            });
+        });
+
+        $('#chkJustifie').change(function () {
+            if ($(this).is(':checked')) {
+                $('#justification').removeAttr('disabled');
+            } else {
+                $('#justification').attr('disabled', 'disabled');
+            }
+        });
+    </script>
+
+    <!--Select Search Logic-->
+    <script>
+
+        function create_custom_dropdowns() {
+            $('#dynamic_select').each(function (i, select) {
+                if (!$(this).next().hasClass('dropdown-select')) {
+                    $(this).after('<div class="dropdown-select wide ' + ($(this).attr('class') || '') + '" tabindex="0"><span class="current"></span><div class="list"><ul></ul></div></div>');
+                    var dropdown = $(this).next();
+                    var options = $(select).find('option');
+                    var selected = $(this).find('option:selected');
+                    dropdown.find('.current').html(selected.data('display-text') || selected.text());
+                    options.each(function (j, o) {
+                        var display = $(o).data('display-text') || '';
+                        dropdown.find('ul').append('<li class="option ' + ($(o).is(':selected') ? 'selected' : '') + '" data-value="' + $(o).val() + '" data-display-text="' + display + '">' + $(o).text() + '</li>');
+                    });
+                }
+            });
+
+            $('.dropdown-select ul').before('<div class="dd-search"><input id="txtSearchValue" autocomplete="off" onkeyup="filter()" class="dd-searchbox" type="text"></div>');
+        }
+
+        // Event listeners
+
+        // Open/close
+        $(document).on('click', '.dropdown-select', function (event) {
+            if ($(event.target).hasClass('dd-searchbox')) {
+                return;
+            }
+            $('.dropdown-select').not($(this)).removeClass('open');
+            $(this).toggleClass('open');
+            if ($(this).hasClass('open')) {
+                $(this).find('.option').attr('tabindex', 0);
+                $(this).find('.selected').focus();
+            } else {
+                $(this).find('.option').removeAttr('tabindex');
+                $(this).focus();
+            }
+        });
+
+        // Close when clicking outside
+        $(document).on('click', function (event) {
+            if ($(event.target).closest('.dropdown-select').length === 0) {
+                $('.dropdown-select').removeClass('open');
+                $('.dropdown-select .option').removeAttr('tabindex');
+            }
+            event.stopPropagation();
+        });
+
+        function filter() {
+            var valThis = $('#txtSearchValue').val();
+            $('.dropdown-select ul > li').each(function () {
+                var text = $(this).text();
+                (text.toLowerCase().indexOf(valThis.toLowerCase()) > -1) ? $(this).show() : $(this).hide();
+            });
+        };
+        // Search
+
+        // Option click
+        $(document).on('click', '.dropdown-select .option', function (event) {
+            $(this).closest('.list').find('.selected').removeClass('selected');
+            $(this).addClass('selected');
+            var text = $(this).data('display-text') || $(this).text();
+            $(this).closest('.dropdown-select').find('.current').text(text);
+            $(this).closest('.dropdown-select').prev('select').val($(this).data('value')).trigger('change');
+        });
+
+        // Keyboard events
+        $(document).on('keydown', '.dropdown-select', function (event) {
+            var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find('.list .option.selected')[0]);
+            // Space or Enter
+            //if (event.keyCode == 32 || event.keyCode == 13) {
+            if (event.keyCode == 13) {
+                if ($(this).hasClass('open')) {
+                    focused_option.trigger('click');
+                } else {
+                    $(this).trigger('click');
+                }
+                return false;
+                // Down
+            } else if (event.keyCode == 40) {
+                if (!$(this).hasClass('open')) {
+                    $(this).trigger('click');
+                } else {
+                    focused_option.next().focus();
+                }
+                return false;
+                // Up
+            } else if (event.keyCode == 38) {
+                if (!$(this).hasClass('open')) {
+                    $(this).trigger('click');
+                } else {
+                    var focused_option = $($(this).find('.list .option:focus')[0] || $(this).find('.list .option.selected')[0]);
+                    focused_option.prev().focus();
+                }
+                return false;
+                // Esc
+            } else if (event.keyCode == 27) {
+                if ($(this).hasClass('open')) {
+                    $(this).trigger('click');
+                }
+                return false;
+            }
+        });
+
+        $(document).ready(function () {
+            create_custom_dropdowns();
+        });
+    </script>
+
+}
