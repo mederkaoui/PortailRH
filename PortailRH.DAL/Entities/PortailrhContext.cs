@@ -199,15 +199,31 @@ public partial class PortailrhContext : DbContext
             entity.ToTable("DEMANDE_DOCUMENT");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CinEmploye)
+                .HasMaxLength(50)
+                .HasColumnName("CIN_EMPLOYE");
             entity.Property(e => e.DateDemande)
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_DEMANDE");
+            entity.Property(e => e.IdDocument).HasColumnName("ID_DOCUMENT");
             entity.Property(e => e.Raison)
                 .HasColumnType("ntext")
                 .HasColumnName("RAISON");
+            entity.Property(e => e.Statut)
+                .HasMaxLength(20)
+                .HasColumnName("STATUT");
             entity.Property(e => e.TitreDocument)
                 .HasMaxLength(255)
                 .HasColumnName("TITRE_DOCUMENT");
+
+            entity.HasOne(d => d.CinEmployeNavigation).WithMany(p => p.DemandeDocuments)
+                .HasForeignKey(d => d.CinEmploye)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DEMANDE_DOCUMENT_EMPLOYE");
+
+            entity.HasOne(d => d.IdDocumentNavigation).WithMany(p => p.DemandeDocuments)
+                .HasForeignKey(d => d.IdDocument)
+                .HasConstraintName("FK_DEMANDE_DOCUMENT_DOCUMENT");
         });
 
         modelBuilder.Entity<Departement>(entity =>

@@ -149,9 +149,9 @@
 
                 @if (Model?.Pagining != null)
                 {
-                    for (int i = 1; i <= Model.Pagining.TotalPages + 1; i++)
+                    for (int i = 1; i <= Model?.Pagining.TotalPages + 1; i++)
                     {
-                        if (Model.Pagining.CurrentPage == i)
+                        if (Model?.Pagining.CurrentPage == i)
                         {
                             <li class="page-item">
                                 <a class="page-link activePageNumber" href="/Recrutement?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PortailRH.BLL.Dtos.DemandeDocument;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,9 @@ namespace PortailRH.BLL.Services.DemandeDocumentService
     /// </summary>
     public interface IDemandeDocumentService
     {
+        public Task<DemandeDocumentPaginatedListDto> GetRequestedDocumnet(DemandeDocumentSearchDto searchDto);
+        public Task<DemandeDocumentDto> GetDetailsDemande(int id);
+        public Task<ICollection<TypeDocumentDto>> GetTypesDocument();
+        public Task AddedDocument(UploadDocumentDto uploadDocumentDto);
     }
 }

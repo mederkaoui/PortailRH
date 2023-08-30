@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.CongeService;
+using PortailRH.BLL.Services.DemandeDocumentService;
 using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.BLL.Services.PresenceService;
@@ -28,6 +29,7 @@ namespace PortailRH.BLL
             services.AddScoped<ICongeService, CongeService>();
             services.AddScoped<IAbsenceService, AbsenceService>();
             services.AddScoped<IPresenceService, PresenceService>();
+            services.AddScoped<IDemandeDocumentService, DemandeDocumentService>();
 
             return services;
         }

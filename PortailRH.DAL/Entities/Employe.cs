@@ -51,6 +51,8 @@ public partial class Employe
 
     public virtual ICollection<Contrat> Contrats { get; set; } = new List<Contrat>();
 
+    public virtual ICollection<DemandeDocument> DemandeDocuments { get; set; } = new List<DemandeDocument>();
+
     public virtual ICollection<Diplome> Diplomes { get; set; } = new List<Diplome>();
 
     public virtual Banque IdBanqueNavigation { get; set; } = null!;

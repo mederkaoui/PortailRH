@@ -1,0 +1,136 @@
+﻿@using PortailRH.BLL.Dtos.DemandeDocument
+@model DemandeDocumentDto
+
+<div class="modal-header">
+    <h2 class="h6 modal-title">Recrutement Détails</h2>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form action="/DemandeDocument/AjouterDocument" method="post" enctype="multipart/form-data">
+    <div class="modal-body" id="modalBody">
+        <div>
+            <div class="col">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">CIN</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.CIN
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Nom</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Nom
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Prenom</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Prenom
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Titre Document</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.TitreDocument
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Raison</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Raison
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Date De Demande</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.DateDemande
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h6 class="mb-0">Status</h6>
+                            </div>
+                            <div class="col-sm-6 text-success text-end">
+                                @Model.Status
+                            </div>
+                        </div>
+                        <hr>
+                        @if (Model.DocumentNom != null)
+                        {
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h6 class="mb-0">Type De Document</h6>
+                                </div>
+                                <div class="col-sm-6 text-success text-end">
+                                    @Model.TypeDocument
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h6 class="mb-0">Document</h6>
+                                </div>
+                                <div class="col-sm-6 text-success text-end">
+                                    <a href="~/documents/demandes/@Model.DocumentNom">@string.Concat(Model.Nom, "_", Model.Prenom, "_", Model.TypeDocument)</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.DocumentNom == null)
+            {
+                <div style="border: 1px solid #DDD;padding: 10px;border-radius: 5px;background: #DDD;">
+                    <input type="hidden" name="IdDemande" id="idDemande" />
+                    <div class="mb-4">
+                        <label class="my-1 me-2" for="typeDocument">Type De Document</label>
+                        <select class="form-select" id="typeDocument" name="IdTypeDocument" required>
+                            @if (ViewBag.TypesDocument != null)
+                            {
+                                foreach (var type in ViewBag.TypesDocument)
+                                {
+                                    <option value="@type.Id">@type.Nom</option>
+                                }
+                            }
+                        </select>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="IdTypeDocument" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="document" class="form-label">Télécharger un cv</label>
+                        <input class="form-control" type="file" id="document" name="Document" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Document" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        @if (Model.DocumentNom == null)
+        {
+            <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+        }
+        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>

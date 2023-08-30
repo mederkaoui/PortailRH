@@ -1,0 +1,259 @@
+﻿@using PortailRH.BLL.Dtos.DemandeDocument
+@using PortailRH.BLL.Dtos.Shared
+@model DemandeDocumentPaginatedListDto
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+<span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+
+
+<div class="table-settings mb-4">
+    <form action="/DemandeDocument" method="get">
+        <div class="row align-items-center justify-content-between">
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="searchQuery">CIN Ou Nom Complet</label>
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" id="searchQuery" name="SearchQuery" class="form-control" placeholder="Rechercher par CIN ou nom complet">
+                </div>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="mois">Mois</label>
+                <select class="form-select" id="statut" name="Statut">
+                    <option>Tous</option>
+                    @foreach (DemandeDocumentStatusEnum status in Enum.GetValues(typeof(DemandeDocumentStatusEnum)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label for="dateDemande">Date De Demande</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input data-datepicker="" class="form-control" name="DateDemande" id="dateDemande" type="text" placeholder="dd/mm/yyyy" />
+                </div>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <button type="submit" class="btn btn-outline-primary w-100" style="margin-top: 30px">Recherche</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead>
+            <tr>
+                <th>CIN</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Date De Demande</th>
+                <th>Raison</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Demandes != null)
+            {
+                foreach (var demande in Model.Demandes)
+                {
+                    <tr>
+                        <td>@demande.CIN</td>
+                        <td>@demande.Nom</td>
+                        <td>@demande.Prenom</td>
+                        <td>@Convert.ToDateTime(demande.DateDemande).ToShortDateString()</td>
+                        <td>@demande.Raison</td>
+                        <td>@demande.Status</td>
+                        <td>
+                            <button class="btn btn-warning btnDetails" data-id="@demande.Id">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <div class="col-4 col-md-2 col-xl-1 ps-md-0">
+            <form method="get" action="/DemandeDocument">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="1">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="@(Model?.Pagining?.CurrentPage ?? 1)">
+                <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
+                    <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
+                    <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
+                    <option value="30" selected="@(Model?.Pagining?.ItemsPerPage == 30 ? "selected" : null)">30</option>
+                    <option value="50" selected="@(Model?.Pagining?.ItemsPerPage == 50 ? "selected" : null)">50</option>
+                    <option value="100" selected="@(Model?.Pagining?.ItemsPerPage == 100 ? "selected" : null)">100</option>
+                </select>
+            </form>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/DemandeDocument?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                    ? 1
+                    : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Précédente</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model?.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model?.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/DemandeDocument?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/DemandeDocument?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/DemandeDocument?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                    ? (Model?.Pagining?.TotalPages ?? 1)
+                    : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Suivante</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+<!--Start Modal-->
+
+<div class="col-lg-4">
+    <!-- Button Modal -->
+    <button type="button" class="btn btn-block btn-gray-800 mb-3 d-none" id="btnShowModal" data-bs-toggle="modal" data-bs-target="#detailsModal">Default</button>
+    <!-- Modal Content -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 50% !important;">
+            <div class="modal-content" id="modalContent">
+                
+            </div>
+        </div>
+    </div>
+    <!-- End of Modal Content -->
+</div>
+
+<!--End Modal-->
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('body').on('click', '.btnDetails', function () {
+            var id = $(this).data('id');
+            
+            $.ajax({
+                url: '/DemandeDocument/GetDetailsDemande',
+                method: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#modalContent').html(result);
+                        $('#idDemande').val(id);
+                        $('#btnShowModal').click();
+                    }
+                }
+            });
+        });
+
+        //Fetch Search Data
+        $(document).ready(function () {
+
+            (function fetchData() {
+                var url = window.location;
+
+                var urlParams = new URLSearchParams(new URL(url).search);
+                var searchQuery = urlParams.get('SearchQuery');
+                var statut = urlParams.get('Statut');
+                var dateDemande = urlParams.get('DateDemande');
+
+                if (searchQuery != null && searchQuery != '') {
+                    $('#searchQuery').val(searchQuery);
+                }
+
+                if (statut != null && statut != '') {
+                    $('#statut').val(statut);
+                }
+
+                if (dateDemande != null && dateDemande != '') {
+                    $('#dateDemande').val(dateDemande);
+                }
+            })();
+        });
+    </script>
+}

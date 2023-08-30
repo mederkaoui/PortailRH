@@ -53,8 +53,13 @@ namespace PortailRH.BLL.Dtos.DemandeDocument
         public string? DocumentNom { get; set; }
 
         /// <summary>
-        /// DemandeDocumentStatusEnum
+        /// TypeDocument
         /// </summary>
-        public DemandeDocumentStatusEnum? Status { get; set; }
+        public string? TypeDocument { get; set; }
+
+        /// <summary>
+        /// Status
+        /// </summary>
+        public string? Status { get; set; }
     }
 }
