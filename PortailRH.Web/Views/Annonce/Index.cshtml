@@ -1,0 +1,198 @@
+﻿@using PortailRH.BLL.Dtos.Annonce
+@model AnnoncePaginatedListDto
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div class="table-settings mb-4">
+    <div class="row align-items-center justify-content-between">
+        <form action="/Annonce" method="get">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <label for="titre">Rechercher par titre</label>
+                    <div class="input-group me-2 me-lg-4">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                        </span>
+                        <input type="search" id="titre" name="Titre" class="form-control" placeholder="Rechercher par titre">
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <label for="dateAnnonce">Date D'Annonce</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                        </span>
+                        <input data-datepicker="" class="form-control" name="DateAnnonce" id="dateAnnonce" type="text" placeholder="dd/mm/yyyy" />
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <button type="submit" class="btn btn-outline-primary w-100" style="margin-top: 30px">Recherche</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <div>
+        @foreach (var annonce in Model.Annonces)
+        {
+            <div class="card text-white bg-info mb-3" style="background-color: #813c8f !important">
+                <div class="card-header">@annonce.Titre</div>
+                <div class="card-body">
+                    <p class="card-text">@annonce.Contenu</p>
+                    <p>@annonce.DateAnnonce</p>
+                </div>
+                <div>
+                    <button data-id="@annonce.Id" class="btn btn-secondary btnDelete" style="float: right; margin: 0 25px 20px;">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Annonce?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                    ? 1
+                    : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                    ) +
+                    "'>Précédente</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model?.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model?.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/Annonce?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/Annonce?CurrentPage=@i">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Annonce?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                    ? (Model?.Pagining?.TotalPages ?? 1)
+                    : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                    ) +
+                    "'>Suivante</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "Êtes-vous sûr de vouloir archiver cette annonce?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Annonce/SupprimerAnnonce?id=" + id;
+                }
+            })
+        });
+
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $(document).ready(function () {
+
+            (function fetchData() {
+                var url = window.location;
+
+                var urlParams = new URLSearchParams(new URL(url).search);
+                var dateAnnonce = urlParams.get('DateAnnonce');
+                var titre = urlParams.get('Titre');
+
+                if (dateAnnonce != null && dateAnnonce != '') {
+                    $('#dateAnnonce').val(dateAnnonce);
+                }
+
+                if (titre != null && titre != '') {
+                    $('#titre').val(titre);
+                }
+            })();
+        });
+    
+    </script>
+}
