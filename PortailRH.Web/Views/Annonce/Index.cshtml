@@ -46,20 +46,27 @@
 
 <div class="card card-body border-0 shadow table-wrapper table-responsive">
     <div>
-        @foreach (var annonce in Model.Annonces)
+        <div class="mb-4" style="display: flex; justify-content: space-between">
+            <h4>Annonces</h4>
+            <button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addAnnonceModal" id="btnNouvelleAnnonce">Nouvelle Annonce</button>
+        </div>
+        @if (Model.Annonces != null)
         {
-            <div class="card text-white bg-info mb-3" style="background-color: #813c8f !important">
-                <div class="card-header">@annonce.Titre</div>
-                <div class="card-body">
-                    <p class="card-text">@annonce.Contenu</p>
-                    <p>@annonce.DateAnnonce</p>
+            foreach (var annonce in Model.Annonces)
+            {
+                <div class="card text-white bg-info mb-3" style="background-color: #813c8f !important">
+                    <div class="card-header">@annonce.Titre</div>
+                    <div class="card-body">
+                        <p class="card-text">@annonce.Contenu</p>
+                        <p>@annonce.DateAnnonce</p>
+                    </div>
+                    <div>
+                        <button data-id="@annonce.Id" class="btn btn-secondary btnDelete" style="float: right; margin: 0 25px 20px;">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <button data-id="@annonce.Id" class="btn btn-secondary btnDelete" style="float: right; margin: 0 25px 20px;">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-            </div>
+            }
         }
     </div>
 
@@ -113,6 +120,56 @@
         <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
     </div>
 </div>
+
+<!--Start Ajouter Annonce Modal-->
+
+
+<div class="col-lg-6">
+    <div class="modal fade" id="addAnnonceModal" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Ajouter une Absence</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/Annonce/AjouterAnnonce" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label for="titre">Titre</label>
+                            <input type="text" class="form-control" name="Titre" id="titre" required data-val="true" />
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Titre" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="contenu">Contenu</label>
+                            <textarea class="form-control" placeholder="Entre votre contenu..." id="contenu" name="Contenu" rows="4" required></textarea>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Contenu" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="dateAnnonce">Date D'Annonce</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                                </span>
+                                <input data-datepicker="" class="form-control" name="DateAnnonce" id="dateAnnonce" type="text" autocomplete="off" placeholder="dd/mm/yyyy" required data-val="true" />
+                            </div>
+                            <span class="text-danger field-validation-valid" data-valmsg-for="DateAnnonce" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--End Ajouter Annonce Modal-->
 
 @section Scripts {
     <script>

@@ -65,5 +65,24 @@ namespace PortailRH.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AjouterAnnonce(AnnonceDto annonceDto)
+        {
+            try
+            {
+                await _annonceService.AddAnnonce(annonceDto);
+
+                TempData["SuccessMessage"] = "L'annonce a été ajoutée avec succès.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "Une erreur est produite lors de l'ajout de l'annonce.";
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }

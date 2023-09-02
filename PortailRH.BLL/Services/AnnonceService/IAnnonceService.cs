@@ -14,5 +14,6 @@ namespace PortailRH.BLL.Services.AnnonceService
     {
         public Task<AnnoncePaginatedListDto> GetAnnonce(AnnonceSearchDto searchDto);
         public Task DeleteAnnonce(int id);
+        public Task AddAnnonce(AnnonceDto annonce);
     }
 }

@@ -99,5 +99,22 @@ namespace PortailRH.BLL.Services.AnnonceService
 
             await _unitOfWork.CommitAsync();
         }
+
+        /// <summary>
+        /// Add Annonce
+        /// </summary>
+        /// <param name="annonce">AnnonceDto</param>
+        /// <returns></returns>
+        public async Task AddAnnonce(AnnonceDto annonce)
+        {
+            await _annonceRepository.AddedAsync(new Annonce
+            {
+                Titre = annonce.Titre,
+                Contenu = annonce.Contenu,
+                DateAnnonce = annonce.DateAnnonce
+            });
+
+            await _unitOfWork.CommitAsync();
+        }
     }
 }
