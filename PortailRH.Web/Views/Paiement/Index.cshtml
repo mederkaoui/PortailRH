@@ -1,0 +1,285 @@
+﻿@using PortailRH.BLL.Dtos.Paiement
+@model PaiementPaginatedListDto
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+
+<div class="table-settings mb-4">
+    <form action="/Paiement" method="get">
+        <div class="row align-items-center justify-content-between">
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="searchQuery">CIN Ou Nom Complet</label>
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af;"></i>
+                    </span>
+                    <input type="search" id="searchQuery" name="SearchQuery" class="form-control" placeholder="Rechercher par CIN ou nom complet">
+                </div>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="mois">Mois</label>
+                <select class="form-select" id="mois" name="Mois">
+                    <option value="01" selected="@(DateTime.Now.Month == 1 ? "Selected" : null)">Janvier</option>
+                    <option value="02" selected="@(DateTime.Now.Month == 2 ? "Selected" : null)">Février</option>
+                    <option value="0" selected="@(DateTime.Now.Month == 3 ? "Selected" : null)">Mars</option>
+                    <option value="04" selected="@(DateTime.Now.Month == 4 ? "Selected" : null)">Avril</option>
+                    <option value="05" selected="@(DateTime.Now.Month == 5 ? "Selected" : null)">Mai</option>
+                    <option value="06" selected="@(DateTime.Now.Month == 6 ? "Selected" : null)">Juin</option>
+                    <option value="07" selected="@(DateTime.Now.Month == 7 ? "Selected" : null)">Juillet</option>
+                    <option value="08" selected="@(DateTime.Now.Month == 8 ? "Selected" : null)">Août</option>
+                    <option value="09" selected="@(DateTime.Now.Month == 9 ? "Selected" : null)">Septembre</option>
+                    <option value="10" selected="@(DateTime.Now.Month == 10 ? "Selected" : null)">Octobre</option>
+                    <option value="11" selected="@(DateTime.Now.Month == 11 ? "Selected" : null)">Novembre</option>
+                    <option value="12" selected="@(DateTime.Now.Month == 12 ? "Selected" : null)">Décembre</option>
+
+                </select>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <label class="my-1 me-2" for="annee">Année</label>
+                <select class="form-select" id="annee" name="Annee">
+                    @for (int i = 2000; i < 2050; i++)
+                    {
+                        <option value="@i" selected="@(i == DateTime.Now.Year ? "Selected" : null)">@i</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col col-md-3 col-lg-3 col-xl-3 mb-4">
+                <button type="submit" class="btn btn-outline-primary w-100" style="margin-top: 30px">Recherche</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="mb-4" style="display: flex; justify-content: flex-end">
+    <button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addPaiementModal" id="btnNouveauPaiement">Nouveau Paiement</button>
+</div>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <table class="table table-hover employesTable">
+        <thead>
+            <tr>
+                <th>CIN</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Salaire</th>
+                <th>Date De Paiement</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Paiements != null)
+            {
+                foreach (var paiement in Model.Paiements)
+                {
+                    <tr>
+                        <td>@paiement.CIN</td>
+                        <td>@paiement.Nom</td>
+                        <td>@paiement.Prenom</td>
+                        <td>@(paiement.Salaire != null ? paiement.Salaire : "-")</td>
+                        <td>@(paiement.DatePaiement != null ? Convert.ToDateTime(paiement.DatePaiement).ToShortDateString() : "-")</td>
+                        <td class="@(paiement.Statut == "Payé" ? "text-success" : "text-danger")">@paiement.Statut</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+        <div class="col-4 col-md-2 col-xl-1 ps-md-0">
+            <form method="get" action="/Paiement">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="1">
+                <input type="hidden" id="currentPage" name="CurrentPage" value="@(Model?.Pagining?.CurrentPage ?? 1)">
+                <select class="btn btn-primary" name="itemsPerPage" onchange="this.form.submit()">
+                    <option value="10" selected="@(Model?.Pagining?.ItemsPerPage == 10 ? "selected" : null)">10</option>
+                    <option value="20" selected="@(Model?.Pagining?.ItemsPerPage == 20 ? "selected" : null)">20</option>
+                    <option value="30" selected="@(Model?.Pagining?.ItemsPerPage == 30 ? "selected" : null)">30</option>
+                    <option value="50" selected="@(Model?.Pagining?.ItemsPerPage == 50 ? "selected" : null)">50</option>
+                    <option value="100" selected="@(Model?.Pagining?.ItemsPerPage == 100 ? "selected" : null)">100</option>
+                </select>
+            </form>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mb-0">
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Paiement?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                    ? 1
+                    : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Précédente</a>"
+                    )
+                </li>
+
+                @if (Model?.Pagining != null)
+                {
+                    for (int i = 1; i <= Model?.Pagining.TotalPages + 1; i++)
+                    {
+                        if (Model?.Pagining.CurrentPage == i)
+                        {
+                            <li class="page-item">
+                                <a class="page-link activePageNumber" href="/Paiement?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/Paiement?CurrentPage=@i&itemsPerPage=@(Model?.Pagining?.ItemsPerPage ?? 10)">@i</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="page-item">
+                    @Html.Raw(
+                    "<a class='page-link' href='/Paiement?CurrentPage=" +
+                    (
+                    ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                    ? (Model?.Pagining?.TotalPages ?? 1)
+                    : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                    ) +
+                    "&itemsPerPage="+(Model?.Pagining?.ItemsPerPage ?? 10)+"'>Suivante</a>"
+                    )
+                </li>
+            </ul>
+        </nav>
+        <div class="fw-normal small mt-4 mt-lg-0">Showing <b>@Model?.Pagining?.ItemsPerPage</b> out of <b>@Model?.Pagining?.TotalItems</b> entries</div>
+    </div>
+</div>
+
+<!--Start Nouveau Paiement Modal-->
+
+<div class="col-lg-6">
+    <div class="modal fade" id="addPaiementModal" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Nouveau Paiement</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/Paiement/NouveauPaiement" method="POST">
+                    <div class="modal-body">
+
+                        <div class="col mb-4">
+                            <label class="my-1 me-2" for="mois">Mois</label>
+                            <select class="form-select" id="mois" name="Mois">
+                                <option value="01" selected="@(DateTime.Now.Month == 1 ? "Selected" : null)">Janvier</option>
+                                <option value="02" selected="@(DateTime.Now.Month == 2 ? "Selected" : null)">Février</option>
+                                <option value="0" selected="@(DateTime.Now.Month == 3 ? "Selected" : null)">Mars</option>
+                                <option value="04" selected="@(DateTime.Now.Month == 4 ? "Selected" : null)">Avril</option>
+                                <option value="05" selected="@(DateTime.Now.Month == 5 ? "Selected" : null)">Mai</option>
+                                <option value="06" selected="@(DateTime.Now.Month == 6 ? "Selected" : null)">Juin</option>
+                                <option value="07" selected="@(DateTime.Now.Month == 7 ? "Selected" : null)">Juillet</option>
+                                <option value="08" selected="@(DateTime.Now.Month == 8 ? "Selected" : null)">Août</option>
+                                <option value="09" selected="@(DateTime.Now.Month == 9 ? "Selected" : null)">Septembre</option>
+                                <option value="10" selected="@(DateTime.Now.Month == 10 ? "Selected" : null)">Octobre</option>
+                                <option value="11" selected="@(DateTime.Now.Month == 11 ? "Selected" : null)">Novembre</option>
+                                <option value="12" selected="@(DateTime.Now.Month == 12 ? "Selected" : null)">Décembre</option>
+
+                            </select>
+                        </div>
+
+                        <div class="col mb-4">
+                            <label class="my-1 me-2" for="annee">Année</label>
+                            <select class="form-select" id="annee" name="Annee">
+                                @for (int i = 2000; i < 2050; i++)
+                                {
+                                    <option value="@i" selected="@(i == DateTime.Now.Year ? "Selected" : null)">@i</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Sauvegarder</button>
+                        <button type="button" class="btn btn-link text-gray-600 ms-auto" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End Nouveau Paiement Modal-->
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+
+        //Fetch Search Data
+        $(document).ready(function () {
+
+            (function fetchData() {
+                var url = window.location;
+
+                var urlParams = new URLSearchParams(new URL(url).search);
+                var searchQuery = urlParams.get('SearchQuery');
+                var mois = urlParams.get('Mois');
+                var annee = urlParams.get('Annee');
+
+                if (searchQuery != null && searchQuery != '') {
+                    $('#searchQuery').val(searchQuery);
+                }
+
+                if (mois != null && mois != '') {
+                    $('#mois').val(mois);
+                }
+
+                if (annee != null && annee != '') {
+                    $('#annee').val(annee);
+                }
+            })();
+        });
+    </script>
+}

@@ -4,8 +4,14 @@ using System.Diagnostics;
 
 namespace PortailRH.Web.Controllers
 {
+    /// <summary>
+    /// HomeController
+    /// </summary>
     public class HomeController : Controller
     {
+        /// <summary>
+        /// ILogger<HomeController>
+        /// </summary>
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
