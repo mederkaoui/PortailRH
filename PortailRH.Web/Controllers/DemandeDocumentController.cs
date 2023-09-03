@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.DemandeDocument;
 using PortailRH.BLL.Services.DemandeDocumentService;
 
-namespace PortailRH.Web.Controllers.Administrateur
+namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// DemandeDocumentController

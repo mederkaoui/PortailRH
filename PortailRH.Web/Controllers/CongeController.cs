@@ -4,7 +4,7 @@ using PortailRH.BLL.Dtos.Shared;
 using PortailRH.BLL.Services.CongeService;
 using PortailRH.BLL.Services.EmployeService;
 
-namespace PortailRH.Web.Controllers.Administrateur
+namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// CongeController

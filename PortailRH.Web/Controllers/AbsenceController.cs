@@ -4,7 +4,7 @@ using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.DAL.Entities;
 
-namespace PortailRH.Web.Controllers.Administrateur
+namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// AbsenceController

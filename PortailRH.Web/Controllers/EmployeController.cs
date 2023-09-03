@@ -5,7 +5,7 @@ using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.BLL.Services.TypeContratService;
 
-namespace PortailRH.Web.Controllers.Administrateur
+namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// EmployeController

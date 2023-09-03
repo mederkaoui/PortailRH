@@ -2,7 +2,7 @@
 using PortailRH.BLL.Dtos.Annonce;
 using PortailRH.BLL.Services.AnnonceService;
 
-namespace PortailRH.Web.Controllers.Administrateur
+namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// AnnonceController
