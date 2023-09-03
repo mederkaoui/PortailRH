@@ -5,7 +5,7 @@ using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.RecrutementService;
 using PortailRH.DAL.Entities;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// RecrutementController

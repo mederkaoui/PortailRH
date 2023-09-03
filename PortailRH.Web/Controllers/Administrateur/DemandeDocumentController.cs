@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.DemandeDocument;
 using PortailRH.BLL.Services.DemandeDocumentService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// DemandeDocumentController
@@ -108,7 +108,7 @@ namespace PortailRH.Web.Controllers
                 {
                     TempData["ErrorMessage"] = "Les informations que vous avez entrées ne sont pas correctes.";
                 }
-             
+
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -4,7 +4,7 @@ using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.DAL.Entities;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// AbsenceController
@@ -97,7 +97,7 @@ namespace PortailRH.Web.Controllers
             catch
             {
                 var errorMessage = "Une erreur s'est produite lorsque nous avons essayé d'obtenir les détails d'absence";
-                
+
                 return Json(new { Error = errorMessage });
             }
         }

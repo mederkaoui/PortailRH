@@ -3,7 +3,7 @@ using PortailRH.BLL.Dtos.Annonce;
 using PortailRH.BLL.Dtos.Paiement;
 using PortailRH.BLL.Services.PaiementService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// PaiementController

@@ -5,7 +5,7 @@ using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.BLL.Services.TypeContratService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// EmployeController
@@ -284,7 +284,7 @@ namespace PortailRH.Web.Controllers
             try
             {
                 await _employeService.NewContract(nouveauContratDto);
-                
+
                 TempData["SuccessMessage"] = "Nouveau contrat est sauvegardé avec succès!";
 
                 return RedirectToAction("AnciensEmployes");

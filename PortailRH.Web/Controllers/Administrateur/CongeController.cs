@@ -4,27 +4,27 @@ using PortailRH.BLL.Dtos.Shared;
 using PortailRH.BLL.Services.CongeService;
 using PortailRH.BLL.Services.EmployeService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// CongeController
     /// </summary>
     public class CongeController : Controller
     {
-		/// <summary>
-		/// ICongeService
-		/// </summary>
-		private readonly ICongeService _congeService;
+        /// <summary>
+        /// ICongeService
+        /// </summary>
+        private readonly ICongeService _congeService;
 
         /// <summary>
 		/// IEmployeService
 		/// </summary>
         private readonly IEmployeService _employeService;
 
-		/// <summary>
-		/// ILogger<CongeController>
-		/// </summary>
-		private readonly ILogger<CongeController> _logger;
+        /// <summary>
+        /// ILogger<CongeController>
+        /// </summary>
+        private readonly ILogger<CongeController> _logger;
 
         /// <summary>
         /// Constructor
@@ -35,44 +35,44 @@ namespace PortailRH.Web.Controllers
         public CongeController(ICongeService congeService, IEmployeService employeService, ILogger<CongeController> logger)
         {
             _congeService = congeService;
-			_employeService = employeService;
+            _employeService = employeService;
             _logger = logger;
         }
 
-		[HttpGet]
+        [HttpGet]
         public async Task<ActionResult<ICollection<CongeDto>>> Index()
         {
-			try
-			{
-				ViewBag.Conges = await _congeService.GetConges();
-				ViewBag.Employes = await _employeService.GetEmployesForConge();
+            try
+            {
+                ViewBag.Conges = await _congeService.GetConges();
+                ViewBag.Employes = await _employeService.GetEmployesForConge();
 
-				return View();
-			}
-			catch
-			{
-				return View();
-			}
+                return View();
+            }
+            catch
+            {
+                return View();
+            }
         }
 
-		[HttpGet]
-		public async Task<ActionResult<DemandesCongesPaginatedListDto>> DemandesConges(DemandesSearchDto searchDto)
-		{
-			try
-			{
-				var demandesConges = await _congeService.GetCongesRequests(searchDto);
+        [HttpGet]
+        public async Task<ActionResult<DemandesCongesPaginatedListDto>> DemandesConges(DemandesSearchDto searchDto)
+        {
+            try
+            {
+                var demandesConges = await _congeService.GetCongesRequests(searchDto);
 
                 return View(demandesConges);
             }
-			catch
-			{
-				return View();
-			}
-		}
+            catch
+            {
+                return View();
+            }
+        }
 
-		[HttpGet]
-		public async Task<ActionResult<DemandesCongesPaginatedListDto>> TousLesConges(DemandesSearchDto searchDto)
-		{
+        [HttpGet]
+        public async Task<ActionResult<DemandesCongesPaginatedListDto>> TousLesConges(DemandesSearchDto searchDto)
+        {
             try
             {
                 var demandesConges = await _congeService.GetAllConges(searchDto);
@@ -86,27 +86,27 @@ namespace PortailRH.Web.Controllers
         }
 
         [HttpPost]
-		public async Task<ActionResult> ModifierConge(UpdateCongeStatusDto updateCongeStatusDto)
-		{
-			try
-			{
-				await _congeService.UpdateCongeStatus(updateCongeStatusDto);
+        public async Task<ActionResult> ModifierConge(UpdateCongeStatusDto updateCongeStatusDto)
+        {
+            try
+            {
+                await _congeService.UpdateCongeStatus(updateCongeStatusDto);
 
                 TempData["SuccessMessage"] = updateCongeStatusDto.Status == CongeStatusEnum.Accepter ? "Congé est accepter avec succès!" : "Congé refuser avec succès!";
 
                 return RedirectToAction(nameof(DemandesConges), new DemandesSearchDto());
             }
-			catch
-			{
+            catch
+            {
                 TempData["ErrorMessage"] = "Une erreur s'est produite lors de la modification de congé.";
 
                 return RedirectToAction(nameof(DemandesConges), new DemandesSearchDto());
-			}
-		}
+            }
+        }
 
-		[HttpGet]
-		public async Task<ActionResult> DeleteConge(int id)
-		{
+        [HttpGet]
+        public async Task<ActionResult> DeleteConge(int id)
+        {
             try
             {
                 await _congeService.DeleteConge(id);

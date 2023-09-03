@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Services.AuthentificationService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// HomeController

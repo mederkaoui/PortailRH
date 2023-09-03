@@ -2,7 +2,7 @@
 using PortailRH.BLL.Dtos.Presence;
 using PortailRH.BLL.Services.PresenceService;
 
-namespace PortailRH.Web.Controllers
+namespace PortailRH.Web.Controllers.Administrateur
 {
     /// <summary>
     /// PresenceController
