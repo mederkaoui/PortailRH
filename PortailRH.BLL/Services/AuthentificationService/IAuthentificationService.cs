@@ -13,6 +13,6 @@ namespace PortailRH.BLL.Services.AuthentificationService
     /// </summary>
     public interface IAuthentificationService
     {
-        public Task<AuthentificationTypeEnum> Login(LoginDto loginDto);
+        public Task<UserDto> Login(LoginDto loginDto);
     }
 }

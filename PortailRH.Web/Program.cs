@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
+builder.Services.AddSession();
 
 builder.Services.AddDbContext<PortailrhContext>(options =>
 {
@@ -35,5 +36,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseSession();
 
 app.Run();

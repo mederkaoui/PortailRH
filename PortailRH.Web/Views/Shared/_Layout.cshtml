@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.DataProtection
+@using PortailRH.Web.Classes
+@using PortailRH.BLL.Dtos.Authentification
+
+@inject IDataProtectionProvider DataProtectionProvider
+
+@{
+    var user = Context.Request.HttpContext.Session.GetEncryptedObject<UserDto>("LoggedInUser", DataProtectionProvider.CreateProtector("LoginDtoProtection"));
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -30,7 +39,6 @@
 </head>
 
 <body>
-
     <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
     <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
         <a class="navbar-brand me-lg-5" href="../../index.html">
@@ -48,8 +56,8 @@
             <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
                 <div class="d-flex align-items-center">
                     <div class="avatar-lg me-4">
-                        <img src="../../assets/img/team/profile-picture-3.jpg" class="card-img-top rounded-circle border-white"
-                             alt="Bonnie Green">
+                        <img src="~/images/EmployeImages/@user.Photo" class="card-img-top rounded-circle border-white"
+                             alt="@string.Concat(@user.Nom, " ", @user.Prenom)">
                     </div>
                     <div class="d-block">
                         <h2 class="h5 mb-3">Hi, Jane</h2>
@@ -207,7 +215,7 @@
                 <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
                 
                 <li class="nav-item">
-                    <a href="#" target="_blank" class="nav-link d-flex align-items-center">
+                    <a href="/Home/Deconnecter" class="nav-link d-flex align-items-center">
                         <span class="sidebar-icon">
                             <i class="fa-solid fa-right-from-bracket" style="color: #9ca3af;"></i>
                         </span>
@@ -228,9 +236,9 @@
                         <li class="nav-item dropdown ms-lg-3">
                             <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="media d-flex align-items-center">
-                                    <img class="avatar rounded-circle" alt="Image placeholder" src="../../assets/img/team/profile-picture-3.jpg">
+                                    <img class="avatar rounded-circle" alt="Image placeholder" src="~/images/EmployeImages/@user.Photo">
                                     <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                                        <span class="mb-0 font-small fw-bold text-gray-900">Bonnie Green</span>
+                                        <span class="mb-0 font-small fw-bold text-gray-900" id="userFullName">@string.Concat(user.Nom, " ", user.Prenom)</span>
                                     </div>
                                 </div>
                             </a>

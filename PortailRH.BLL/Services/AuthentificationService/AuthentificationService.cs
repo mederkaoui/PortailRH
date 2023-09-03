@@ -48,8 +48,8 @@ namespace PortailRH.BLL.Services.AuthentificationService
         /// Check user information and return it owen type
         /// </summary>
         /// <param name="loginDto">LoginDto</param>
-        /// <returns>AuthentificationTypeEnum</returns>
-        public async Task<AuthentificationTypeEnum> Login(LoginDto loginDto)
+        /// <returns>UserDto</returns>
+        public async Task<UserDto> Login(LoginDto loginDto)
         {
             var user = await _authentificationRepository.GetAsync(
                                                                 predicate: x => x.NomUtilisateur == loginDto.Username &&
@@ -57,20 +57,16 @@ namespace PortailRH.BLL.Services.AuthentificationService
                                                                 include: inc => inc.Include(x => x.CinEmployeNavigation)
                                                                                     .ThenInclude(x => x.IdFonctionNavigation)
                                                                                     .ThenInclude(x => x.IdDepartementNavigation)
-                                                            );
+                                                            ) ?? throw new InvalidDataException($"Aucune utilisateur avec les informations suivant: Nom D'Utilisateur [{loginDto.Username}], Mot De Passe [{loginDto.Password}]");
             _logger.LogInformation($"Get user loged with username: {loginDto.Username} and password: {loginDto.Password}");
 
-            if (user == null)
+            return new UserDto
             {
-                return AuthentificationTypeEnum.PasUnUtilisateur;
-            }
-
-            if (user.CinEmployeNavigation?.IdFonctionNavigation?.IdDepartementNavigation?.Nom?.ToLower() == HUMAN_RESOURCES_CONST.ToLower())
-            {
-                return AuthentificationTypeEnum.Administrateur;
-            }
-
-            return AuthentificationTypeEnum.Employe;
+                Nom = user?.CinEmployeNavigation.Nom,
+                Prenom = user?.CinEmployeNavigation.Prenom,
+                EstAdministarteur = user?.CinEmployeNavigation.IdFonctionNavigation?.IdDepartementNavigation?.Nom?.ToLower() == HUMAN_RESOURCES_CONST.ToLower(),
+                Photo = user?.CinEmployeNavigation.Photo,
+            };
         }
     }
 }

@@ -7,23 +7,28 @@ using System.Threading.Tasks;
 namespace PortailRH.BLL.Dtos.Authentification
 {
     /// <summary>
-    /// LoginDto
+    /// UserDto
     /// </summary>
-    public class LoginDto
+    public class UserDto
     {
         /// <summary>
-        /// Username
+        /// Nom
         /// </summary>
-        public string? Username { get; set; }
+        public string? Nom { get; set; }
 
         /// <summary>
-        /// Password
+        /// Prenom
         /// </summary>
-        public string? Password { get; set; }
+        public string? Prenom { get; set; }
 
         /// <summary>
-        /// RememberMe
+        /// EstAdministarteur
         /// </summary>
-        public bool? RememberMe { get; set; }
+        public bool? EstAdministarteur { get; set; }
+
+        /// <summary>
+        /// Photo
+        /// </summary>
+        public string? Photo { get; set; }
     }
 }
