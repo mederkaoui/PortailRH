@@ -88,7 +88,7 @@
                         <span class="sidebar-text">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li id="employeNavContainer" class="nav-item">
                     <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
                           data-bs-toggle="collapse" data-bs-target="#submenu-app">
                         <span>
@@ -104,17 +104,17 @@
                     <div class="multi-level collapse "
                          role="list" id="submenu-app" aria-expanded="false">
                         <ul class="flex-column nav">
-                            <li class="nav-item " id="navListEmployes">
+                            <li class="nav-item empNavLink" id="navListEmployes">
                                 <a class="nav-link" href="/Employe">
                                     <span class="sidebar-text">Liste des Employés</span>
                                 </a>
                             </li>
-                            <li class="nav-item " id="navNouvelEmploye">
+                            <li class="nav-item empNavLink" id="navNouvelEmploye">
                                 <a class="nav-link" href="/Employe/NouvelEmploye">
                                     <span class="sidebar-text">Nouvel Employé</span>
                                 </a>
                             </li>
-                            <li class="nav-item " id="navAnciensEmployes">
+                            <li class="nav-item empNavLink" id="navAnciensEmployes">
                                 <a class="nav-link" href="/Employe/AnciensEmployes">
                                     <span class="sidebar-text">Anciens Employés</span>
                                 </a>
@@ -132,7 +132,7 @@
                     </a>
                 </li>
                 
-                <li class="nav-item">
+                <li id="congeNavContainer" class="nav-item">
                     <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
                           data-bs-toggle="collapse" data-bs-target="#conge-app">
                         <span>
@@ -148,17 +148,17 @@
                     <div class="multi-level collapse "
                          role="list" id="conge-app" aria-expanded="false">
                         <ul class="flex-column nav">
-                            <li class="nav-item " id="navConges">
+                            <li class="nav-item congeNavLink" id="navConges">
                                 <a class="nav-link" href="/Conge">
                                     <span class="sidebar-text">Congés</span>
                                 </a>
                             </li>
-                            <li class="nav-item " id="navDemandesConges">
+                            <li class="nav-item congeNavLink" id="navDemandesConges">
                                 <a class="nav-link" href="/Conge/DemandesConges">
                                     <span class="sidebar-text">Demandes Congés</span>
                                 </a>
                             </li>
-                            <li class="nav-item " id="navTousLesConges">
+                            <li class="nav-item congeNavLink" id="navTousLesConges">
                                 <a class="nav-link" href="/Conge/TousLesConges">
                                     <span class="sidebar-text">Tous Les Congés</span>
                                 </a>
@@ -326,14 +326,39 @@
         $(document).ready(function () {
             // Retrieve the active item from local storage
             const activeItem = localStorage.getItem("activeNavItem");
-            
+            var empNavActiveLink = localStorage.getItem("empNavActiveLink");
+            var congeNavActiveLink = localStorage.getItem("congeNavActiveLink");
+
             // If an active item is found, apply the active state
             if (activeItem) {
                 $(".nav-item").removeClass("active");
-                $('.nav-item #submenu-app').removeClass('show');
 
                 $("#" + activeItem).addClass("active");
-                $('#' + activeItem + ' #submenu-app').addClass('show');
+                
+                if (activeItem == "employeNavContainer") {
+                    $('#submenu-app').addClass('show');
+                    
+                    if (empNavActiveLink != null && empNavActiveLink != '') {
+                        $(".nav-item").removeClass("active");
+                        $("#" + empNavActiveLink).addClass("active");
+                    }
+
+                } else {
+                    $('#submenu-app').removeClass('show');
+                }
+
+
+                if (activeItem == "congeNavContainer") {
+                    $('#conge-app').addClass('show');
+
+                    if (congeNavActiveLink != null && congeNavActiveLink != '') {
+                        $(".nav-item").removeClass("active");
+                        $("#" + congeNavActiveLink).addClass("active");
+                    }
+
+                } else {
+                    $('#conge-app').removeClass('show');
+                }
             }
             
             // Add click event listeners to navigation items
@@ -343,6 +368,14 @@
                 } else {
                     localStorage.setItem("activeNavItem", "navDashboard");
                 }
+            });
+
+            $('.empNavLink').click(function () {
+                localStorage.setItem("empNavActiveLink", $(this).attr("id"));
+            });
+
+            $('.congeNavLink').click(function () {
+                localStorage.setItem("congeNavActiveLink", $(this).attr("id"));
             });
         });
     </script>
