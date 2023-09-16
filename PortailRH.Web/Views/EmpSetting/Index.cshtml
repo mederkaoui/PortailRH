@@ -1,0 +1,558 @@
+﻿@using PortailRH.BLL.Dtos.Employe
+@model DetailsEmployeDto
+
+@{
+    Layout = "_EmployeLayout";
+}
+
+@section Styles {
+    <link href="~/emp_css/style.css" rel="stylesheet" />
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div class="container">
+    <form action="/EmpSetting/ModifierInformations" method="post" enctype="multipart/form-data">
+        <div>
+            <h4>Informations Personnelles</h4>
+            <hr />
+        </div>
+
+        <div>
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' id="imageUpload" name="Photo" accept=".png, .jpg, .jpeg" />
+                    <label for="imageUpload" id="btnCamera">
+                        <i class="fa fa-camera" style="color: #9ca3af;"></i>
+                    </label>
+                </div>
+                <div class="avatar-preview">
+                    <div id="imagePreview" style="background-image: url(../images/EmployeImages/@Model.Photo);"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="cin">CIN</label>
+                <input type="text" class="form-control" name="CIN" id="cin" value="@Model?.CIN" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.CIN, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="nom">Nom</label>
+                <input type="text" class="form-control" name="Nom" id="nom" value="@Model?.Nom" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="prenom">Prenom</label>
+                <input type="text" class="form-control" name="Prenom" id="prenom" value="@Model?.Prenom" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Prenom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" name="Email" id="email" value="@Model?.Email" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <label for="dateNaissance">Date De Naissance</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input class="form-control" name="DateNaissance" id="dateNaissance" type="date" placeholder="dd/mm/yyyy" value="@(Model?.DateNaissance != null ? Model?.DateNaissance!.Value.ToString("yyyy-MM-dd") : null)" required data-val="true" />
+                </div>
+                @Html.ValidationMessageFor(model => model.DateNaissance, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3 px-4">
+                <fieldset>
+                    <legend class="h6">Sexe</legend>
+
+                    <div class="row">
+                        <div class="form-check col-4">
+                            <input class="form-check-input" type="radio" name="Sexe" id="homme" value="homme" @(Model?.Sexe == "homme" ? "checked" : "") />
+                            <label class="form-check-label" for="homme">
+                                Homme
+                            </label>
+                        </div>
+
+                        <div class="form-check col-4">
+                            <input class="form-check-input" type="radio" name="Sexe" id="femme" value="femme" @(Model?.Sexe == "femme" ? "checked" : "") />
+                            <label class="form-check-label" for="femme">
+                                Femme
+                            </label>
+                        </div>
+                    </div>
+
+                </fieldset>
+                @Html.ValidationMessageFor(model => model.Sexe, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="telephone">Téléphone</label>
+                <input type="text" class="form-control" name="Telephone" id="telephone" value="@Model?.Telephone" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="matriculeCnss">Matricule CNSS</label>
+                <input type="number" class="form-control" name="MatriculeCnss" id="matriculeCnss" value="@Model?.MatriculeCnss" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.MatriculeCnss, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="situationFamiliale">Situation Familiale</label>
+                <select class="form-control" id="situationFamiliale" name="SituationFamiliale" required>
+                    <option selected disabled>Choisissez une situation familiale</option>
+                    <option value="celibataire" selected="@(Model?.SituationFamiliale == "celibataire" ? true : false)">Célibataire</option>
+                    <option value="marie" selected="@(Model?.SituationFamiliale == "marie" ? true : false)">Marié</option>
+                    <option value="divorce" selected="@(Model?.SituationFamiliale == "divorce" ? true : false)">Divorcé</option>
+                    <option value="separe" selected="@(Model?.SituationFamiliale == "separe" ? true : false)">Séparé</option>
+                    <option value="veuf" selected="@(Model?.SituationFamiliale == "veuf" ? true : false)">Veuf</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.SituationFamiliale, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="pays">Pays</label>
+                <select class="form-control" id="pays" onchange="updateCities(this)" required>
+                    <option selected disabled>Choisissez un pays</option>
+                    @if (ViewBag.ListsData.Pays != null)
+                    {
+                        foreach (var pays in ViewBag.ListsData.Pays)
+                        {
+                            <option value="@pays.Id" selected="@(pays.Nom == Model?.Pays ? true : false)">@pays.Nom</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="ville">Ville</label>
+                <select class="form-control" id="ville" name="Ville" required>
+                    <option selected disabled>Choisissez une ville</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.Ville, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="enfants">Enfants</label>
+                <input type="number" class="form-control" name="Enfants" id="enfants" value="@Model?.Enfants" />
+                @Html.ValidationMessageFor(model => model.Enfants, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-4">
+                <label for="adresse">Adresse</label>
+                <input type="text" class="form-control" name="Adresse" id="adresse" value="@Model?.Adresse" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>Poste</h4>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="departement">Département</label>
+                <select class="form-control" id="departement" onchange="updateFonctions(this)" required>
+                    <option selected disabled>Choisissez une département</option>
+                    @if (ViewBag.ListsData.Departements != null)
+                    {
+                        foreach (var departement in ViewBag.ListsData.Departements)
+                        {
+                            <option value="@departement.Id" selected="@(departement.Nom == Model?.Departement ? true : false)">@departement.Nom</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="fonction">Fonction</label>
+                <select class="form-control" id="fonction" name="Fonction" required>
+                    <option selected disabled>Choisissez une fonction</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.Fonction, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label for="salaire">Salaire</label>
+                <input type="number" class="form-control" name="Salaire" id="salaire" value="@Model?.Salaire" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.Salaire, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="typeContrat">Type De Contrat</label>
+                <select class="form-control" id="typeContrat" name="TypeContrat" required>
+                    <option selected disabled>Choisissez un type</option>
+                    @if (ViewBag.ListsData.TypesContrat != null)
+                    {
+                        foreach (var type in ViewBag.ListsData.TypesContrat)
+                        {
+                            <option value="@type.Id" selected="@(type.Nom == Model?.TypeContrat ? true : false)">@type.Nom</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.TypeContrat, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <label for="dateEntree">Date D'entrée</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input class="form-control" name="DateEntree" id="dateEntree" type="date" placeholder="dd/mm/yyyy" value="@(Model?.DateEntree != null ? Model?.DateEntree!.Value.ToString("yyyy-MM-dd") : null)" required data-val="true" />
+                </div>
+                @Html.ValidationMessageFor(model => model.DateEntree, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-4 col-sm-6 mb-3">
+                <label for="dateSortie">Date Sortie</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
+                    </span>
+                    <input class="form-control" name="DateSortie" id="dateSortie" type="date" placeholder="dd/mm/yyyy" value="@(Model?.DateSortie != null ? Model?.DateSortie!.Value.ToString("yyyy-MM-dd") : null)" data-val="true" />
+                </div>
+                @Html.ValidationMessageFor(model => model.DateSortie, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>Banque</h4>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 mb-4">
+                <label class="my-1 me-2" for="banque">Banque</label>
+                <select class="form-control" id="banque" name="Banque" required>
+                    <option selected disabled>Choisissez une banque</option>
+                    @if (ViewBag.ListsData.Banques != null)
+                    {
+                        foreach (var banque in ViewBag.ListsData.Banques)
+                        {
+                            <option value="@banque.Id" selected="@(banque.Nom == Model?.Banque ? true : false)">@banque.Nom</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.Banque, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-6 col-sm-6 mb-3">
+                <label for="rib">RIB</label>
+                <input type="text" class="form-control" name="RIB" id="rib" value="@Model?.RIB" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.RIB, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>Contact D'urgence</h4>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 mb-3">
+                <label for="contactUrgenceNomComplet">Nom Complet</label>
+                <input type="text" class="form-control" name="ContactUrgenceNomComplet" id="contactUrgenceNomComplet" value="@Model?.ContactUrgenceNomComplet" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.ContactUrgenceNomComplet, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-6 col-sm-6 mb-3">
+                <label for="contactUrgenceTelephone">Téléphone</label>
+                <input type="tel" class="form-control" name="ContactUrgenceTelephone" id="contactUrgenceTelephone" value="@Model?.ContactUrgenceTelephone" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.ContactUrgenceTelephone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>Diplômes</h4>
+            <hr />
+        </div>
+
+        <div id="diplomesContainer">
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.Diplomes.Count; i++)
+                {
+                    <div class="diplome-entry">
+                        <div class="row">
+                            <div class="col-lg-5 col-sm-5 mb-3">
+                                <label>Niveau</label>
+                                <input name="Diplomes[@i].Niveau" value="@Model.Diplomes.ToList()[i].Niveau" class="form-control" />
+                            </div>
+                            <div class="col-lg-5 col-sm-5 mb-3">
+                                <label>Titre</label>
+                                <input name="Diplomes[@i].Titre" value="@Model.Diplomes.ToList()[i].Titre" class="form-control" />
+                            </div>
+                            <div class="col-lg-2 col-sm-2 mb-3">
+                                <span class="delete-diplome"><i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="diplome-entry">
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-5 mb-3">
+                            <label>Niveau</label>
+                            <input name="Diplomes[0].Niveau" class="form-control" />
+                        </div>
+                        <div class="col-lg-5 col-sm-5 mb-3">
+                            <label>Titre</label>
+                            <input name="Diplomes[0].Titre" class="form-control" />
+                        </div>
+                        <div class="col-lg-2 col-sm-2 mb-3">
+                            <span class="delete-diplome"><i class="fa fa-times"></i></span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="button" id="addDiplome" class="btn btn-info">Ajouter Un Diplôme</button>
+
+        <div class="mt-4">
+            <h4>Authentification</h4>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 mb-3">
+                <label for="nomUtilisateur">Nom Utilisateur</label>
+                <input type="text" class="form-control" name="NomUtilisateur" id="nomUtilisateur" value="@Model?.NomUtilisateur" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.NomUtilisateur, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-lg-6 col-sm-6 mb-3">
+                <label for="modeDePasse">Mode De Passe</label>
+                <input type="password" class="form-control" name="ModeDePasse" id="modeDePasse" value="@Model?.ModeDePasse" required data-val="true" />
+                @Html.ValidationMessageFor(model => model.ModeDePasse, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="float-right mt-4">
+            <button type="reset" class="btn btn-warning">
+                <i class="fa-solid fa-arrow-rotate-left"></i>
+                Réinitialiser
+            </button>
+
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Modifier
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        //Logic for upload image
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+        //Change Villes based on the selected county
+        function updateCities(countrySelect) {
+            var selectedCountryId = countrySelect.value;
+            var citySelect = document.getElementById("ville");
+
+            // Clear the existing options
+            while (citySelect.options.length > 1) {
+                citySelect.options.remove(1);
+            }
+
+            // Deserialize the model data
+            var modelData = @Html.Raw(Json.Serialize(ViewBag.ListsData.Pays));
+
+            // Find the selected country in the model data
+            var selectedCountry = modelData.find(country => country.id == selectedCountryId);
+
+            if (selectedCountry) {
+                // Populate the city dropdown based on the selected country
+                selectedCountry.villes.forEach(city => {
+                    var option = document.createElement("option");
+                    option.value = city.id;
+                    option.text = city.nom;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+
+        //Change Fonctions based on the selected département
+        function updateFonctions(departementSelect) {
+            var selectedDepartementId = departementSelect.value;
+            var fonctionSelect = document.getElementById("fonction");
+
+            // Clear the existing options
+            while (fonctionSelect.options.length > 1) {
+                fonctionSelect.options.remove(1);
+            }
+
+            // Deserialize the model data
+            var modelData = @Html.Raw(Json.Serialize(ViewBag.ListsData.Departements));
+
+            // Find the selected departement in the model data
+            var selectedDepartement = modelData.find(departement => departement.id == selectedDepartementId);
+
+            if (selectedDepartement) {
+                // Populate the city dropdown based on the selected country
+                selectedDepartement.fonctions.forEach(fonction => {
+                    var option = document.createElement("option");
+                    option.value = fonction.id;
+                    option.text = fonction.nom;
+                    fonctionSelect.appendChild(option);
+                });
+            }
+        }
+
+        //Added new diplome
+        document.addEventListener("DOMContentLoaded", function () {
+            const addDiplomeButton = document.getElementById("addDiplome");
+            const diplomesContainer = document.getElementById("diplomesContainer");
+
+            addDiplomeButton.addEventListener("click", function () {
+                var diplomeCount = $("#diplomesContainer > .diplome-entry").length;
+
+                const newDiplomeEntry = document.createElement("div");
+                newDiplomeEntry.className = "diplome-entry";
+                
+                newDiplomeEntry.innerHTML = `
+                                        <div class="row">
+                                            <div class="col-lg-5 col-sm-5 mb-3">
+                                                <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
+                                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
+                                            </div>
+                                            <div class="col-lg-5 col-sm-5 mb-3">
+                                                <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
+                                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
+                                            </div>
+                                            <div class="col-lg-2 col-sm-2 mb-3">
+                                                <span class="delete-diplome"><i class="fa fa-times"></i></span>
+                                            </div>
+                                        </div>
+                                    `;
+
+                diplomesContainer.appendChild(newDiplomeEntry);
+            });
+        });
+
+        $(document).ready(function () {
+            $('#pays').trigger('change');
+            $('#departement').trigger('change');
+
+            var ville = @Html.Raw(Json.Serialize(Model?.Ville));
+            var fonction = @Html.Raw(Json.Serialize(Model?.Fonction));
+
+            $("#ville option").each(function () {
+                if ($(this).text() === ville) {
+                    $(this).prop("selected", true);
+                } else {
+                    $(this).prop("selected", false);
+                }
+            });
+
+            $("#fonction option").each(function () {
+                if ($(this).text() === fonction) {
+                    $(this).prop("selected", true);
+                } else {
+                    $(this).prop("selected", false);
+                }
+            });
+
+            $("body").on('click', '.delete-diplome', function () {
+                $(this).closest(".diplome-entry").remove();
+
+                var index = -1;
+                $("#diplomesContainer .diplome-entry").each(function () {
+                    var inputs = $(this).find('input');
+                    inputs.each(function () {
+                        var currentName = $(this).attr('name');
+                        var newName = currentName.replace(/\[(\d+)\]/, '[' + index + ']');
+                        $(this).attr('name', newName);
+                    });
+
+                    index++;
+                });
+            });
+
+        });
+    </script>
+}

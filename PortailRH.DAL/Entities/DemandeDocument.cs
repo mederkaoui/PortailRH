@@ -19,7 +19,11 @@ public partial class DemandeDocument
 
     public string? Statut { get; set; }
 
+    public int? IdTypeDemandeDocument { get; set; }
+
     public virtual Employe CinEmployeNavigation { get; set; } = null!;
 
     public virtual Document? IdDocumentNavigation { get; set; }
+
+    public virtual TypeDocument? IdTypeDemandeDocumentNavigation { get; set; }
 }

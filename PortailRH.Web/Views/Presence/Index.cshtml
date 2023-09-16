@@ -1,6 +1,10 @@
 ﻿@using PortailRH.BLL.Dtos.Presence
 @model ICollection<PresenceDto>
 
+@{
+    ViewBag.Title = "Présences";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>

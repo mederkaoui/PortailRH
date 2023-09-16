@@ -1,0 +1,308 @@
+﻿@using PortailRH.BLL.Dtos.DemandeDocument
+@model EmployeDemandeDocumentPaginatedListDto
+
+@{
+    Layout = "_EmployeLayout";
+}
+
+@section Styles {
+    <style>
+        .activePage {
+            background: #e86907;
+            color: #FFF;
+        }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+<span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+
+
+<div class="container">
+    <div style=" display: flex; justify-content: space-between; margin-bottom: 20px; ">
+        <h2>Demande De Documents</h2>
+        <button class="btn btn-success" data-toggle="modal" data-target="#nouvelleDemandeModal">Nouvelle Demande</button>
+    </div>
+
+    <div class="table-responsive m-b-30">
+        <table class="table table-borderless table-striped table-earning text-center">
+            <thead>
+                <tr>
+                    <th>Titre Document</th>
+                    <th style="padding: 22px 10px;">Date De Demande</th>
+                    <th>Statut</th>
+                    <th>Document</th>
+                    <th>Opérations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var demande in Model.Demandes!)
+                    {
+                        <tr>
+                            <td>
+                                @(demande.TitreDocument?.Length > 20 ? demande.TitreDocument.Substring(0, 20) + "....." : demande.TitreDocument)
+                            </td>
+                            <td>@Convert.ToDateTime(demande.DateDemande).ToShortDateString()</td>
+                            <td>@demande.Status</td>
+                            <td>
+                                @if (demande.DocumentNom != null)
+                                {
+                                    <a href="./documents/demandes/@demande.DocumentNom">Cliquez ici pour télécharger le document.</a>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td style="justify-content: center; display: flex; ">
+                                <div class="table-data-feature">
+                                    <button data-id="@demande.Id" class="item btnEdit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                    <button data-id="@demande.Id" class="item btnDelete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer">
+                                        <i class="zmdi zmdi-delete"></i>
+                                    </button>
+                                    <button data-id="@demande.Id" class="item btnDetails" data-toggle="tooltip" data-placement="top" title="" data-original-title="Details">
+                                        <i class="zmdi zmdi-more"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                @Html.Raw(
+                "<a class='page-link' href='/EmpDemandeDocument?CurrentPage=" +
+                (
+                ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                ? 1
+                : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                ) +
+                "'>Précédente</a>"
+                )
+            </li>
+            @for (int i = 1; i <= Model?.Pagining?.TotalPages + 1; i++)
+            {
+                <li class="page-item"><a class="page-link @(Model?.Pagining?.CurrentPage == i ? "activePage" : "")" href="/EmpDemandeDocument?CurrentPage=@i">@i</a></li>
+            }
+            <li class="page-item">
+                @Html.Raw(
+                "<a class='page-link' href='/EmpDemandeDocument?CurrentPage=" +
+                (
+                ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                ? (Model?.Pagining?.TotalPages ?? 1)
+                : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                ) +
+                "'>Suivante</a>"
+                )
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+<!-- Start Nouvelle Demande Document Modal -->
+<div class="modal fade" id="nouvelleDemandeModal" tabindex="-1" role="dialog" aria-labelledby="nouvelleDemandeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nouvelleDemandeModalLabel">Nouvelle Demande De Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/EmpDemandeDocument/AjouterDemande" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="titreDocument" class=" form-control-label">Titre De Document</label>
+                        <input type="text" id="titreDocument" name="TitreDocument" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="TitreDocument" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateDemande" class=" form-control-label">Date De Demande</label>
+                        <input type="date" id="dateDemande" name="DateDemande" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="DateDemande" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="raison" class=" form-control-label">Raison</label>
+                        <textarea type="text" id="raison" name="Raison" class="form-control"></textarea>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Raison" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="typeDocument" class=" form-control-label">Type De Document</label>
+                        <select name="IdTypeDocument" id="typeDocument" class="form-control" required>
+                            @if (ViewBag.TypesDocument != null)
+                            {
+                                foreach (var document in ViewBag.TypesDocument)
+                                {
+                                    if (Convert.ToString(document.Nom).ToLower() != "cv")
+                                    {
+                                        <option value="@document.Id">@document.Nom</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="IdTypeDocument" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-info">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Nouvelle Demande Document Modal -->
+
+<!-- Start Detials Demande Document Modal -->
+<div class="modal fade" id="detialsDemandeModal" tabindex="-1" role="dialog" aria-labelledby="detailsDemandeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsDemandeModalLabel">Details Demande De Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="detialsDemandeModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Nouvelle Demande Document Modal -->
+
+<!-- Start Modifier Demande Document Modal -->
+<div class="modal fade" id="modifierDemandeModal" tabindex="-1" role="dialog" aria-labelledby="modifierDemandeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifierDemandeModalLabel">Modifier La Demande De Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modifierDemandeModalBody"></div>
+        </div>
+    </div>
+</div>
+<!-- End Modifier Demande Document Modal -->
+
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "Êtes-vous sûr de vouloir supprimer cette demande ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/EmpDemandeDocument/SupprimerDemande?id=" + id;
+                }
+            })
+        });
+        
+        $('body').on('click', '.btnEdit', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/EmpDemandeDocument/GetDemandeModificationData',
+                method: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#modifierDemandeModalBody').html(result);
+                        $('#modifierDemandeModal').modal();
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.btnDetails', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/EmpDemandeDocument/GetDemandeDetails',
+                method: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#detialsDemandeModalBody').html(result);
+                        $('#detialsDemandeModal').modal();
+                    }
+                }
+            });
+        });
+    </script>
+}

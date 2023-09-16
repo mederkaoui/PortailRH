@@ -1,6 +1,10 @@
 ﻿@using PortailRH.BLL.Dtos.Paiement
 @model PaiementPaginatedListDto
 
+@{
+    ViewBag.Title = "Paiements";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>

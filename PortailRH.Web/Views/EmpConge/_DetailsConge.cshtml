@@ -1,0 +1,42 @@
+﻿@using PortailRH.BLL.Dtos.Conge
+@model CongeDto
+
+
+<div class="container">
+    <div class="main-body">
+
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Date De Début</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Convert.ToDateTime(Model.DateDebut).ToShortDateString()
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Date De Fin</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Convert.ToDateTime(Model.DateFin).ToShortDateString()
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Statut</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.Status
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

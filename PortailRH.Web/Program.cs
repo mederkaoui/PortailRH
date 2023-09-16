@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
 builder.Services.AddSession();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<PortailrhContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

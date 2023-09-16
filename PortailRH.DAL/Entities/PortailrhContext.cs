@@ -206,6 +206,7 @@ public partial class PortailrhContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_DEMANDE");
             entity.Property(e => e.IdDocument).HasColumnName("ID_DOCUMENT");
+            entity.Property(e => e.IdTypeDemandeDocument).HasColumnName("ID_TYPE_DEMANDE_DOCUMENT");
             entity.Property(e => e.Raison)
                 .HasColumnType("ntext")
                 .HasColumnName("RAISON");
@@ -224,6 +225,10 @@ public partial class PortailrhContext : DbContext
             entity.HasOne(d => d.IdDocumentNavigation).WithMany(p => p.DemandeDocuments)
                 .HasForeignKey(d => d.IdDocument)
                 .HasConstraintName("FK_DEMANDE_DOCUMENT_DOCUMENT");
+
+            entity.HasOne(d => d.IdTypeDemandeDocumentNavigation).WithMany(p => p.DemandeDocuments)
+                .HasForeignKey(d => d.IdTypeDemandeDocument)
+                .HasConstraintName("FK_DEMANDE_DOCUMENT_TYPE_DOCUMENT");
         });
 
         modelBuilder.Entity<Departement>(entity =>

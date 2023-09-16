@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,5 +26,11 @@ namespace PortailRH.BLL.Dtos.Conge
         /// DateFin
         /// </summary>
         public DateTime DateFin { get; set; }
+
+        /// <summary>
+        /// IsAdministrateur
+        /// </summary>
+        [BindNever]
+        public bool IsAdministrateur { get; set; } = true;
     }
 }

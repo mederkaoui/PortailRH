@@ -1,6 +1,10 @@
 ﻿@using PortailRH.BLL.Dtos.Employe
 @model DetailsEmployeDto
 
+@{
+    ViewBag.Title = "Modifier Un Employé";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
@@ -30,7 +34,7 @@
                                 </label>
                             </div>
                             <div class="avatar-preview">
-                                <div id="imagePreview" style="background-image: url(../images/EmployeImages/profile.png);"></div>
+                                <div id="imagePreview" style="background-image: url(../images/EmployeImages/@Model.Photo);"></div>
                             </div>
                         </div>
                     </div>
@@ -68,7 +72,7 @@
                                 <span class="input-group-text">
                                     <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
                                 </span>
-                                <input data-datepicker="" class="form-control" name="DateNaissance" id="dateNaissance" type="text" placeholder="dd/mm/yyyy" value="@Model?.DateNaissance" required data-val="true" />
+                                <input data-datepicker="" class="form-control" name="DateNaissance" id="dateNaissance" type="text" placeholder="dd/mm/yyyy" value="@(Model?.DateNaissance != null ? Model?.DateNaissance!.Value.ToString("yyyy-MM-dd") : null)" required data-val="true" />
                             </div>
                             @Html.ValidationMessageFor(model => model.DateNaissance, "", new { @class = "text-danger" })
                         </div>
@@ -79,14 +83,14 @@
 
                                 <div class="row">
                                     <div class="form-check col-4">
-                                        <input class="form-check-input" type="radio" name="Sexe" id="homme" value="homme" checked="@(Model?.Sexe == "homme" ? true : false)" />
+                                        <input class="form-check-input" type="radio" name="Sexe" id="homme" value="homme" @(Model?.Sexe == "homme" ? "checked" : "") />
                                         <label class="form-check-label" for="homme">
                                             Homme
                                         </label>
                                     </div>
 
                                     <div class="form-check col-4">
-                                        <input class="form-check-input" type="radio" name="Sexe" id="femme" value="femme" checked="@(Model?.Sexe == "femme" ? true : false)  />
+                                        <input class="form-check-input" type="radio" name="Sexe" id="femme" value="femme" @(Model?.Sexe == "femme" ? "checked" : "") />
                                         <label class="form-check-label" for="femme">
                                             Femme
                                         </label>
@@ -220,7 +224,7 @@
                                 <span class="input-group-text">
                                     <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
                                 </span>
-                                <input data-datepicker="" class="form-control" name="DateEntree" id="dateEntree" type="text" placeholder="dd/mm/yyyy" value="@Model?.DateEntree" required data-val="true" />
+                                <input data-datepicker="" class="form-control" name="DateEntree" id="dateEntree" type="text" placeholder="dd/mm/yyyy" value="@(Model?.DateEntree != null ? Model?.DateEntree!.Value.ToString("yyyy-MM-dd") : null)" required data-val="true" />
                             </div>
                             @Html.ValidationMessageFor(model => model.DateEntree, "", new { @class = "text-danger" })
                         </div>
@@ -231,7 +235,7 @@
                                 <span class="input-group-text">
                                     <i class="fa-solid fa-calendar" style="color: #9ca3af;font-size: 1.3rem;"></i>
                                 </span>
-                                <input data-datepicker="" class="form-control" name="DateSortie" id="dateSortie" type="text" placeholder="dd/mm/yyyy" value="@Model?.DateSortie" data-val="true" />
+                                <input data-datepicker="" class="form-control" name="DateSortie" id="dateSortie" type="text" placeholder="dd/mm/yyyy" value="@(Model?.DateSortie != null ? Model?.DateSortie!.Value.ToString("yyyy-MM-dd") : null)" data-val="true" />
                             </div>
                             @Html.ValidationMessageFor(model => model.DateSortie, "", new { @class = "text-danger" })
                         </div>
@@ -292,17 +296,20 @@
                     <div id="diplomesContainer">
                         @if (Model != null)
                         {
-                            foreach (var diplome in Model.Diplomes)
+                            for (int i = 0; i < Model.Diplomes.Count; i++)
                             {
                                 <div class="diplome-entry">
                                     <div class="row">
-                                        <div class="col-lg-6 col-sm-6 mb-3">
-                                            <label asp-for="@diplome.Niveau">Niveau</label>
-                                            <input asp-for="@diplome.Niveau" class="form-control" />
+                                        <div class="col-lg-5 col-sm-5 mb-3">
+                                            <label>Niveau</label>
+                                            <input name="Diplomes[@i].Niveau" value="@Model.Diplomes.ToList()[i].Niveau" class="form-control" />
                                         </div>
-                                        <div class="col-lg-6 col-sm-6 mb-3">
-                                            <label asp-for="@diplome.Titre">Titre</label>
-                                            <input asp-for="@diplome.Titre" class="form-control" />
+                                        <div class="col-lg-5 col-sm-5 mb-3">
+                                            <label>Titre</label>
+                                            <input name="Diplomes[@i].Titre" value="@Model.Diplomes.ToList()[i].Titre" class="form-control" />
+                                        </div>
+                                        <div class="col-lg-2 col-sm-2 mb-3">
+                                            <span class="delete-diplome"><i class="fa fa-times"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -312,19 +319,23 @@
                         {
                             <div class="diplome-entry">
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                    <div class="col-lg-5 col-sm-5 mb-3">
                                         <label>Niveau</label>
                                         <input name="Diplomes[0].Niveau" class="form-control" />
                                     </div>
-                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                    <div class="col-lg-5 col-sm-5 mb-3">
                                         <label>Titre</label>
                                         <input name="Diplomes[0].Titre" class="form-control" />
+                                    </div>
+                                    <div class="col-lg-2 col-sm-2 mb-3">
+                                        <span class="delete-diplome"><i class="fa fa-times"></i></span>
                                     </div>
                                 </div>
                             </div>
                         }
                     </div>
-                    <button type="button" id="addDiplome" class="btn btn-info">Add Diploma</button>
+
+                    <button type="button" id="addDiplome" class="btn btn-info">Ajouter Un Diplôme</button>
 
                     <div class="mt-4">
                         <h4>Authentification</h4>
@@ -481,27 +492,29 @@
             const addDiplomeButton = document.getElementById("addDiplome");
             const diplomesContainer = document.getElementById("diplomesContainer");
 
-            let diplomeCount = @(Model?.Diplomes.Count ?? 1);
-
             addDiplomeButton.addEventListener("click", function () {
+                var diplomeCount = $("#diplomesContainer > .diplome-entry").length;
+
                 const newDiplomeEntry = document.createElement("div");
                 newDiplomeEntry.className = "diplome-entry";
 
                 newDiplomeEntry.innerHTML = `
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 mb-3">
-                                        <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
-                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 mb-3">
-                                        <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
-                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
-                                    </div>
-                                </div>
-                            `;
+                                                <div class="row">
+                                                    <div class="col-lg-5 col-sm-5 mb-3">
+                                                        <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
+                                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
+                                                    </div>
+                                                    <div class="col-lg-5 col-sm-5 mb-3">
+                                                        <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
+                                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
+                                                    </div>
+                                                    <div class="col-lg-2 col-sm-2 mb-3">
+                                                        <span class="delete-diplome"><i class="fa fa-times"></i></span>
+                                                    </div>
+                                                </div>
+                                            `;
 
                 diplomesContainer.appendChild(newDiplomeEntry);
-                diplomeCount++;
             });
         });
 
@@ -526,6 +539,22 @@
                 } else {
                     $(this).prop("selected", false);
                 }
+            });
+
+            $("body").on('click', '.delete-diplome', function () {
+                $(this).closest(".diplome-entry").remove();
+
+                var index = -1;
+                $("#diplomesContainer .diplome-entry").each(function () {
+                    var inputs = $(this).find('input');
+                    inputs.each(function () {
+                        var currentName = $(this).attr('name');
+                        var newName = currentName.replace(/\[(\d+)\]/, '[' + index + ']');
+                        $(this).attr('name', newName);
+                    });
+
+                    index++;
+                });
             });
         });
     </script>

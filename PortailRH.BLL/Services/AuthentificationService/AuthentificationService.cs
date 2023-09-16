@@ -62,6 +62,7 @@ namespace PortailRH.BLL.Services.AuthentificationService
 
             return new UserDto
             {
+                CIN = user?.CinEmploye,
                 Nom = user?.CinEmployeNavigation.Nom,
                 Prenom = user?.CinEmployeNavigation.Prenom,
                 EstAdministarteur = user?.CinEmployeNavigation.IdFonctionNavigation?.IdDepartementNavigation?.Nom?.ToLower() == HUMAN_RESOURCES_CONST.ToLower(),

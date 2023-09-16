@@ -155,7 +155,7 @@ namespace PortailRH.BLL.Services.AbsenceService
                 DateFin = absenceDto.DateFin,
                 Justifie = absenceDto.Justifie,
                 Justification = absenceDto.Justifie == true ? absenceDto.Justification : null,
-                CinEmploye = absenceDto.CIN,
+                CinEmploye = absenceDto.CIN!,
                 IdDocumentNavigation = absenceDto.DocumentNom != null ? new Document
                 {
                     Nom = absenceDto.DocumentNom,
@@ -184,6 +184,7 @@ namespace PortailRH.BLL.Services.AbsenceService
 
             return new AbsenceDto
             {
+                Id = absence.Id,
                 CIN = absence.CinEmploye,
                 Nom = absence.CinEmployeNavigation.Nom,
                 Prenom = absence.CinEmployeNavigation.Prenom,
@@ -194,6 +195,64 @@ namespace PortailRH.BLL.Services.AbsenceService
                 TypeAbsence = absence.IdTypeAbsenceNavigation.Nom,
                 DocumentNom = absence.IdDocumentNavigation?.Nom
             };
+        }
+
+        /// <summary>
+        /// Get Employe Absences
+        /// </summary>
+        /// <param name="cin">cin employe</param>
+        /// <returns>ICollection<EmployeAbsenceDto></returns>
+        public async Task<ICollection<EmployeAbsenceDto>> GetEmployeAbsences(string cin)
+        {
+            var absences = await _absenceRepository.GetListAsync(
+                                                                predicate: x => x.CinEmploye == cin,
+                                                                include: inc => inc.Include(x => x.IdTypeAbsenceNavigation)
+                                                                                    .Include(x => x.IdDocumentNavigation),
+                                                                orderBy: ord => ord.OrderByDescending(x => x.DateDebut)
+                                                            );
+
+            return absences.Select(x => new EmployeAbsenceDto
+            {
+                Id = x.Id,
+                DateDebut = x.DateDebut,
+                DateFin = x.DateFin,
+                Justifie = x.Justifie ?? false,
+                TypeAbsence = x.IdTypeAbsenceNavigation.Nom,
+            }).ToList();
+        }
+
+        /// <summary>
+        /// Update absence informations
+        /// </summary>
+        /// <param name="id">id absence</param>
+        /// <param name="editAbsenceDto">EditAbsenceDto</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task UpdateAbsence(int id, EditAbsenceDto editAbsenceDto)
+        {
+            var absence = await _absenceRepository.GetAsync(
+                                                        predicate: x => x.Id == id,
+                                                        include: inc => inc.Include(x => x.IdDocumentNavigation),
+                                                        disableTracking: false
+                                                    ) ?? throw new InvalidDataException($"Aucune absence avec l'id: {id}");
+
+            var idType = (await _typeDocumentRepository.GetAsync(x => x.Nom == "Certificat De Travail"))!.Id;
+
+            absence.DateDebut = editAbsenceDto.DateDebut;
+            absence.DateFin = editAbsenceDto.DateFin;
+            absence.IdTypeAbsence = editAbsenceDto.IdTypeAbsence;
+            absence.CinEmploye = editAbsenceDto.CIN!;
+            absence.Justifie = editAbsenceDto.Justifie;
+            absence.Justification = editAbsenceDto.Justification;
+            absence.IdDocumentNavigation = absence.IdDocumentNavigation?.Nom != editAbsenceDto.DocumentNom ? new Document
+            {
+                Nom = editAbsenceDto.DocumentNom,
+                IdTypeDocument = idType
+            } : absence.IdDocumentNavigation;
+
+            _absenceRepository.Update(absence);
+
+            await _unitOfWork.CommitAsync();
         }
     }
 }

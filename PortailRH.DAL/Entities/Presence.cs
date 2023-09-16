@@ -11,9 +11,9 @@ public partial class Presence
 
     public DateTime? DatePresence { get; set; }
 
-    public TimeSpan? HeureEntree { get; set; }
+    public int? HeureEntree { get; set; }
 
-    public TimeSpan? HeureSortie { get; set; }
+    public int? HeureSortie { get; set; }
 
     public virtual Employe CinEmployeNavigation { get; set; } = null!;
 }

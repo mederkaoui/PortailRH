@@ -1,0 +1,76 @@
+﻿@using PortailRH.BLL.Dtos.DemandeDocument
+@model DemandeDocumentDto
+
+
+<div class="container">
+    <div class="main-body">
+
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Titre De Document</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.TitreDocument
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Date De Demande</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Convert.ToDateTime(Model.DateDemande).ToShortDateString()
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Raison</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.Raison
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Statut</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.Status
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Type De Document</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @Model.TypeDocument
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Document</h6>
+                        </div>
+                        <div class="col-sm-6 text-success text-end">
+                            @if (Model.DocumentNom != null)
+                            {
+                                <a href="./documents/demandes/@Model.DocumentNom">Cliquez ici pour télécharger le document.</a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

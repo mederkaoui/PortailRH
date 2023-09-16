@@ -12,6 +12,11 @@ namespace PortailRH.BLL.Dtos.Authentification
     public class UserDto
     {
         /// <summary>
+        /// CIN
+        /// </summary>
+        public string? CIN { get; set; }
+
+        /// <summary>
         /// Nom
         /// </summary>
         public string? Nom { get; set; }

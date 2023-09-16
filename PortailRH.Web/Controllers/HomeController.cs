@@ -37,7 +37,7 @@ namespace PortailRH.Web.Controllers
             IDataProtectionProvider dataProtectionProvider, ILogger<HomeController> logger)
         {
             _authentificationService = authentificationService;
-            _dataProtector = dataProtectionProvider.CreateProtector("LoginDtoProtection"); ;
+            _dataProtector = dataProtectionProvider.CreateProtector("LoginDtoProtection");
             _logger = logger;
         }
 
@@ -124,11 +124,11 @@ namespace PortailRH.Web.Controllers
                     Path = "/",
                     Expires = DateTime.UnixEpoch
                 });
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -163,7 +163,7 @@ namespace PortailRH.Web.Controllers
                             return RedirectToAction("Index", "Employe");
                         }
 
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Index", "EmpPresence");
                     }
                 }
                 catch

@@ -1,0 +1,200 @@
+﻿@using PortailRH.BLL.Dtos.Presence
+@model ICollection<EmployePresenceDto>
+
+@{
+    Layout = "_EmployeLayout";
+}
+
+@section Styles {
+    <link href="~/emp_css/line-awesome.css" rel="stylesheet" />
+    <link href="~/emp_css/datepicker.css" rel="stylesheet" />
+    <link href="~/emp_css/style.css" rel="stylesheet" />
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+<span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+}
+
+<div class="p-5">
+    <h2 class="mb-4">Presences</h2>
+    <div class="card">
+        <div class="card-body p-0">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- calendar modal -->
+<div id="modal-view-event" class="modal modal-top fade calendar-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
+                <div class="event-body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="add-event" action="/EmpPresence/AjouterPresence" method="post">
+                <div class="modal-body">
+                    <h4>Ajoutez Votre Présence</h4>
+                    <div class="form-group">
+                        <label>Heures Travaillées</label>
+                        <input type="number" class="form-control" name="HeuresTravaillees" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date De Presence</label>
+                        <input type='date' class="datetimepicker form-control" id="datePresence" name="DatePresence" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/emp_js/moment.js"></script>
+    <script src="~/emp_js/fullcalendar.min.js"></script>
+    <script src="~/emp_js/datepicker.js"></script>
+    @* <script src="~/emp_js/datepicker.en.js"></script> *@
+
+    <!--Script For Events-->
+    <script>
+        // jQuery(document).ready(function () {
+        //     jQuery('.datetimepicker').datepicker({
+        //         timepicker: true,
+        //         language: 'en-US',
+        //         range: false,
+        //         multipleDates: false,
+        //         multipleDatesSeparator: " - "
+        //     });
+        //     jQuery("#add-event").submit(function () {
+        //         alert("Submitted");
+        //         var values = {};
+        //         $.each($('#add-event').serializeArray(), function (i, field) {
+        //             values[field.name] = field.value;
+        //         });
+        //         console.log(
+        //             values
+        //         );
+        //     });
+
+        //     jQuery('#datePresence').val((new Date()).toLocaleDateString('en-US'));
+        // });
+
+        (function () {
+            'use strict';
+            // ------------------------------------------------------- //
+            // Calendar
+            // ------------------------------------------------------ //
+            jQuery(function () {
+                var presences = @Html.Raw(Json.Serialize(Model));
+                var allEvents = [];
+
+                presences.forEach(presence => {
+                    allEvents.push({
+                        title: presence.heuresTravaillees,
+                        description: 'Heures Travaillees : ' + presence.heuresTravaillees,
+                        start: new Date(presence.datePresence),
+                        end: new Date(presence.datePresence),
+                    });
+                });
+                
+                // page is ready
+                jQuery('#calendar').fullCalendar({
+                    themeSystem: 'bootstrap4',
+                    // emphasizes business hours
+                    businessHours: false,
+                    defaultView: 'month',
+                    // event dragging & resizing
+                    editable: true,
+                    // header
+                    header: {
+                        left: 'title',
+                        center: 'month,agendaWeek,agendaDay',
+                        right: 'today prev,next'
+                    },
+                    events: allEvents,
+                    eventRender: function (event, element) {
+                        if (event.icon) {
+                            element.find(".fc-title").prepend("<i class='fa fa-" + event.icon + "'></i>");
+                        }
+                    },
+                    dayClick: function () {
+                        jQuery('#modal-view-event-add').modal();
+                    },
+                    eventClick: function (event, jsEvent, view) {
+                        jQuery('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
+                        jQuery('.event-title').html(event.title);
+                        jQuery('.event-body').html(event.description);
+                        jQuery('.eventUrl').attr('href', event.url);
+                        jQuery('#modal-view-event').modal();
+                    },
+                })
+            });
+
+        })(jQuery);
+    </script>
+
+    <!--Global Script-->
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+    </script>
+}

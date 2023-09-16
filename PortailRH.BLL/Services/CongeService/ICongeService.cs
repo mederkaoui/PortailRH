@@ -13,15 +13,13 @@ namespace PortailRH.BLL.Services.CongeService
 	public interface ICongeService
 	{
 		public Task<ICollection<CongeDto>> GetConges();
-
-		public Task<DemandesCongesPaginatedListDto> GetAllConges(DemandesSearchDto searchDto);
-
+		public Task<ICollection<CongeDto>> GetEmployeConges(string cin);
+        public Task<DemandesCongesPaginatedListDto> GetAllConges(DemandesSearchDto searchDto);
         public Task<DemandesCongesPaginatedListDto> GetCongesRequests(DemandesSearchDto searchDto);
-
 		public Task UpdateCongeStatus(UpdateCongeStatusDto updateCongeStatusDto);
-
 		public Task DeleteConge(int id);
-
 		public Task AddConge(AddCongeDto congeDto);
+		public Task<CongeDto> GetCongeDetails(int id);
+		public Task UpdateConge(int id, EditCongeDto congeDto);
     }
 }

@@ -68,6 +68,28 @@ namespace PortailRH.BLL.Services.CongeService
 		}
 
         /// <summary>
+		/// Get Employe Conges
+		/// </summary>
+		/// <returns>ICollection<CongeDto></returns>
+		public async Task<ICollection<CongeDto>> GetEmployeConges(string cin)
+        {
+            var conges = await _congeRepository.GetListAsync(
+                                                    predicate: x => x.CinEmploye == cin,
+                                                    orderBy: ord => ord.OrderByDescending(x => x.DateDebut)
+                                                ) ?? throw new InvalidDataException($"Aucune employe avec le cin: {cin}");
+
+            _logger.LogInformation("Get Employe Conges");
+
+            return conges.Select(x => new CongeDto
+            {
+                Id = x.Id,
+                DateDebut = x.DateDebut,
+                DateFin = x.DateFin,
+                Status = x.Statut,
+            }).ToList();
+        }
+
+        /// <summary>
         /// Get All Conges
         /// </summary>
         /// <param name="searchDto">DemandesSearchDto</param>
@@ -194,8 +216,51 @@ namespace PortailRH.BLL.Services.CongeService
                 CinEmploye = congeDto.CIN,
                 DateDebut = congeDto.DateDebut,
                 DateFin = congeDto.DateFin,
-                Statut = CongeStatusEnum.Accepter.ToString()
+                Statut = congeDto.IsAdministrateur ? CongeStatusEnum.Accepter.ToString() : CongeStatusEnum.OnAttends.ToString(),
             });
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Get Conge Details
+        /// </summary>
+        /// <param name="id">id conge</param>
+        /// <returns>CongeDto</returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task<CongeDto> GetCongeDetails(int id)
+        {
+            var conge = await _congeRepository.GetAsync(x => x.Id == id)
+                                                ?? throw new InvalidDataException($"Aucune conge avec l'id: {id}");
+
+            return new CongeDto
+            {
+                Id = id,
+                DateDebut = conge.DateDebut,
+                DateFin = conge.DateFin,
+                Status = conge.Statut
+            };
+        }
+
+        /// <summary>
+        /// Update conge informations
+        /// </summary>
+        /// <param name="id">id conge</param>
+        /// <param name="congeDto">EditCongeDto</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task UpdateConge(int id, EditCongeDto congeDto)
+        {
+            var conge = await _congeRepository.GetAsync(
+                                                    predicate: x => x.Id == id,
+                                                    disableTracking: false
+                                                )
+                                                ?? throw new InvalidDataException($"Aucune conge avec l'id: {id}");
+
+            conge.DateDebut = congeDto.DateDebut;
+            conge.DateFin = congeDto.DateFin;
+
+            _congeRepository.Update(conge);
 
             await _unitOfWork.CommitAsync();
         }

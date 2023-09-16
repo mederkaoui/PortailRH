@@ -86,3 +86,11 @@
 .employesTable th, .employesTable td {
     text-wrap: wrap
 }
+
+.delete-diplome {
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+    display: inline-block;
+    margin: 22% 0 0 20%;
+}

@@ -1,0 +1,51 @@
+﻿@using PortailRH.BLL.Dtos.DemandeDocument
+@model DemandeDocumentDto
+
+<form action="/EmpDemandeDocument/ModifierDemande" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="titreDocument" class=" form-control-label">Titre De Document</label>
+            <input type="text" id="titreDocument" name="TitreDocument" class="form-control" required value="@Model.TitreDocument" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="TitreDocument" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dateDemande" class=" form-control-label">Date De Demande</label>
+            <input type="date" id="dateDemande" name="DateDemande" class="form-control" required value="@Model.DateDemande!.Value.ToString("yyyy-MM-dd")" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="DateDemande" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="raison" class=" form-control-label">Raison</label>
+            <textarea type="text" id="raison" name="Raison" class="form-control">@Model.Raison</textarea>
+            <span class="text-danger field-validation-valid" data-valmsg-for="Raison" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="typeDocument" class=" form-control-label">Type De Document</label>
+            <select name="IdTypeDocument" id="typeDocument" class="form-control" required>
+                @if (ViewBag.TypesDocument != null)
+                {
+                    foreach (var document in ViewBag.TypesDocument)
+                    {
+                        if (document.Nom == Model.TypeDocument)
+                        {
+                            <option value="@document.Id" selected>@document.Nom</option>
+                        }
+                        else
+                        {
+                            <option value="@document.Id">@document.Nom</option>
+                        }
+                    }
+                }
+            </select>
+            <span class="text-danger field-validation-valid" data-valmsg-for="IdTypeDocument" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="submit" class="btn btn-info">Modifier</button>
+    </div>
+</form>

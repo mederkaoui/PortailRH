@@ -17,5 +17,7 @@ namespace PortailRH.BLL.Services.AbsenceService
         public Task DeleteAbsence(int id);
         public Task AddAbsence(AddAbsenceDto absenceDto);
         public Task<AbsenceDto> GetDetailsAbsence(int id);
+        public Task<ICollection<EmployeAbsenceDto>> GetEmployeAbsences(string cin);
+        public Task UpdateAbsence(int id, EditAbsenceDto editAbsenceDto);
     }
 }

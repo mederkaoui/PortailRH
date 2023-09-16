@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Dtos.Shared;
@@ -7,12 +6,6 @@ using PortailRH.BLL.Mappers;
 using PortailRH.DAL.Entities;
 using PortailRH.DAL.Repositories.GenericRepository;
 using PortailRH.DAL.Repositories.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PortailRH.BLL.Services.EmployeService
 {
@@ -47,6 +40,11 @@ namespace PortailRH.BLL.Services.EmployeService
         private readonly IGenericRepository<Banque> _banqueRepository;
 
         /// <summary>
+        /// IGenericRepository<Diplome>
+        /// </summary>
+        private readonly IGenericRepository<Diplome> _diplomeRepository;
+
+        /// <summary>
         /// IUnitOfWork
         /// </summary>
         private readonly IUnitOfWork _unitOfWork;
@@ -60,16 +58,23 @@ namespace PortailRH.BLL.Services.EmployeService
         /// Constructor
         /// </summary>
         /// <param name="employeRepository">IGenericRepository<EmployeService></param>
+        /// <param name="paysRepository">IGenericRepository<Pay></param>
+        /// <param name="typeContratRepository">IGenericRepository<TypeContrat></param>
+        /// <param name="departementRepository">IGenericRepository<Departement></param>
+        /// <param name="banqueRepository">IGenericRepository<Banque></param>
+        /// <param name="diplomeRepository">IGenericRepository<Diplome></param>
         /// <param name="unitOfWork">IUnitOfWork</param>
         /// <param name="logger">ILogger<EmployeService></param>
         public EmployeService(IGenericRepository<Employe> employeRepository, IGenericRepository<Pay> paysRepository, IGenericRepository<TypeContrat> typeContratRepository,
-            IGenericRepository<Departement> departementRepository, IGenericRepository<Banque> banqueRepository, IUnitOfWork unitOfWork, ILogger<EmployeService> logger)
+            IGenericRepository<Departement> departementRepository, IGenericRepository<Banque> banqueRepository, IGenericRepository<Diplome>  diplomeRepository,
+            IUnitOfWork unitOfWork, ILogger<EmployeService> logger)
         {
             _employeRepository = employeRepository;
             _paysRepository = paysRepository;
             _typeContratRepository = typeContratRepository;
             _departementRepository = departementRepository;
             _banqueRepository = banqueRepository;
+            _diplomeRepository = diplomeRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -221,21 +226,20 @@ namespace PortailRH.BLL.Services.EmployeService
         /// </summary>
         /// <param name="employe">NouvelEmployeDto</param>
         /// <returns>DetailsEmployeDto</returns>
-        public async Task<DetailsEmployeDto> UpdateEmploye(NouvelEmployeDto employe)
+        public async Task<DetailsEmployeDto> UpdateEmploye(string cin, NouvelEmployeDto employe)
         {
             var updatedEmploye = await _employeRepository.GetAsync(
-                                                                    predicate:x => x.Cin == employe.CIN,
+                                                                    predicate:x => x.Cin == cin,
                                                                     include: inc => inc.Include(x => x.IdVilleNavigation).ThenInclude(x => x.IdPaysNavigation)
                                                                                 .Include(x => x.IdFonctionNavigation).ThenInclude(x => x.IdDepartementNavigation)
                                                                                 .Include(x => x.IdBanqueNavigation)
-                                                                                .Include(x => x.Diplomes)
                                                                                 .Include(x => x.Authentification)
                                                                                 .Include(x => x.Contrats).ThenInclude(x => x.IdTypeNavigation),
                                                                     disableTracking: false
                                                                 )
                         ?? throw new InvalidDataException($"il n'y a pas d'employé qui correspond à ce cin: {employe.CIN}");
 
-            updatedEmploye.Cin = employe.CIN;
+            //updatedEmploye.Cin = employe.CIN;
             updatedEmploye.Nom = employe.Nom;
             updatedEmploye.Prenom = employe.Prenom;
             updatedEmploye.Email = employe.Email;
@@ -245,7 +249,7 @@ namespace PortailRH.BLL.Services.EmployeService
             updatedEmploye.SituationFamiliale = employe.SituationFamiliale;
             updatedEmploye.MatriculeCnss = employe.MatriculeCnss;
             updatedEmploye.NombreEnfants = employe.Enfants;
-            updatedEmploye.Photo = employe.PhotoName;
+            updatedEmploye.Photo = employe.PhotoName != null ? employe.PhotoName : updatedEmploye.Photo;
             updatedEmploye.IdVille = employe.Ville;
             updatedEmploye.Adresse = employe.Adresse;
             updatedEmploye.IdFonction = employe.Fonction;
@@ -253,18 +257,31 @@ namespace PortailRH.BLL.Services.EmployeService
             updatedEmploye.Rib = employe.RIB;
             updatedEmploye.ContactUrgenceNom = employe.ContactUrgenceNomComplet;
             updatedEmploye.ContactUrgenceTelephone = employe.ContactUrgenceTelephone;
-            updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().IdType = employe.TypeContrat;
-            updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().DateDebut = employe.DateEntree;
-            updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().DateFin = employe.DateSortie;
-            updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().Salaire = employe.Salaire;
-            updatedEmploye.Diplomes = employe.Diplomes != null ? employe.Diplomes.Select(x => new Diplome
+
+            if (updatedEmploye.Contrats.Count() > 0)
             {
-                Niveau = x.Niveau,
-                Titre = x.Titre
-            }).ToList() : new();
+                updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().IdType = employe.TypeContrat;
+                updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().DateDebut = employe.DateEntree;
+                updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().DateFin = employe.DateSortie;
+                updatedEmploye.Contrats.OrderByDescending(x => x.DateDebut).First().Salaire = employe.Salaire;
+            }
+            else
+            {
+                updatedEmploye.Contrats = new List<Contrat>
+                {
+                    new Contrat
+                    {
+                        IdType = employe.TypeContrat,
+                        DateDebut = employe.DateEntree,
+                        DateFin = employe.DateSortie,
+                        Salaire = employe.Salaire
+                    }
+                };
+            }
+
             updatedEmploye.Authentification = new Authentification
             {
-                CinEmploye = employe.CIN,
+                CinEmploye = cin,
                 NomUtilisateur = employe.NomUtilisateur,
                 MotDePasse = employe.ModeDePasse
             };
@@ -273,7 +290,24 @@ namespace PortailRH.BLL.Services.EmployeService
 
             await _unitOfWork.CommitAsync();
 
-            return updatedEmploye.ToDetailsEmploye();
+            //Get User Diplomes
+            var diplomes = await _diplomeRepository.GetListAsync(x => x.CinEmploye == cin);
+
+            //Delete User Diplomes
+            _diplomeRepository.Delete(diplomes);
+
+            var newDiplomes = employe.Diplomes != null ? employe.Diplomes.Select(x => new Diplome
+            {
+                CinEmploye = cin,
+                Niveau = x.Niveau,
+                Titre = x.Titre
+            }).ToList() : new();
+
+            await _diplomeRepository.AddedAsync(newDiplomes);
+
+            await _unitOfWork.CommitAsync();
+
+            return await GetDetailsEmploye(cin);
         }
 
         /// <summary>

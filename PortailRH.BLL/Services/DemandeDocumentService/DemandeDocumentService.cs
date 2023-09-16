@@ -5,11 +5,6 @@ using PortailRH.BLL.Dtos.Shared;
 using PortailRH.DAL.Entities;
 using PortailRH.DAL.Repositories.GenericRepository;
 using PortailRH.DAL.Repositories.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PortailRH.BLL.Services.DemandeDocumentService
 {
@@ -111,6 +106,7 @@ namespace PortailRH.BLL.Services.DemandeDocumentService
             var demande = await _demandeDocumentRepository.GetAsync(
                                                                     predicate: x => x.Id == id,
                                                                     include: inc => inc.Include(x => x.CinEmployeNavigation)
+                                                                                        .Include(x => x.IdTypeDemandeDocumentNavigation)
                                                                                         .Include(x => x.IdDocumentNavigation)
                                                                                         .ThenInclude(x => x.IdTypeDocumentNavigation)
                                                                 ) ?? throw new InvalidDataException($"Aucune demande avec cette id: {id}");
@@ -127,7 +123,7 @@ namespace PortailRH.BLL.Services.DemandeDocumentService
                 Raison = demande.Raison,
                 TitreDocument = demande.TitreDocument,
                 DocumentNom = demande.IdDocumentNavigation?.Nom,
-                TypeDocument = demande.IdDocumentNavigation?.IdTypeDocumentNavigation.Nom,
+                TypeDocument = demande.IdDocumentNavigation?.IdTypeDocumentNavigation.Nom ?? demande.IdTypeDemandeDocumentNavigation?.Nom,
                 Status = demande.Statut == DemandeDocumentStatusEnum.EnAttente.ToString() ? "En Attente" :
                                         (
                                             demande.Statut == DemandeDocumentStatusEnum.EnCours.ToString() ? "En Cours" :
@@ -176,6 +172,114 @@ namespace PortailRH.BLL.Services.DemandeDocumentService
                 Nom = uploadDocumentDto.DocumentNom,
                 IdTypeDocument = type.Id
             };
+
+            _demandeDocumentRepository.Update(demande);
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Get Employe Demandes Documents
+        /// </summary>
+        /// <param name="searchDto">EmployeDemandeDocumentSearchDto</param>
+        /// <returns>EmployeDemandeDocumentPaginatedListDto</returns>
+        public async Task<EmployeDemandeDocumentPaginatedListDto> GetEmployePaginatedDemandes(EmployeDemandeDocumentSearchDto searchDto)
+        {
+            var demandes = await _demandeDocumentRepository.GetPaginatedListAsync(
+                                                                            currentPage: searchDto.CurrentPage,
+                                                                            itemsPerPage: searchDto.ItemsPerPage,
+                                                                            predicate: x => x.CinEmploye == searchDto.CIN,
+                                                                            include: inc => inc.Include(x => x.IdDocumentNavigation)
+                                                                                                .ThenInclude(x => x.IdTypeDocumentNavigation)
+                                                                                                .Include(x => x.IdTypeDemandeDocumentNavigation)
+                                                                        );
+
+            return new EmployeDemandeDocumentPaginatedListDto
+            {
+                Demandes = demandes.Entities.Select(x => new EmployeDemandeDocumentDto
+                {
+                    Id = x.Id,
+                    DateDemande = x.DateDemande,
+                    TitreDocument = x.TitreDocument,
+                    TypeDocument = x.IdTypeDemandeDocumentNavigation?.Nom,
+                    Raison = x.Raison,
+                    DocumentNom = x.IdDocumentNavigation?.Nom,
+                    Status = x.Statut == DemandeDocumentStatusEnum.EnAttente.ToString() ? "En Attente" :
+                                        (
+                                            x.Statut == DemandeDocumentStatusEnum.EnCours.ToString() ? "En Cours" :
+                                            (
+                                                x.Statut == DemandeDocumentStatusEnum.Termine.ToString() ? DemandeDocumentStatusEnum.Termine.ToString() :
+                                                DemandeDocumentStatusEnum.Annule.ToString()
+                                            )
+                                        ),
+                }).ToList(),
+                Pagining = new PaginatedDto
+                {
+                    CurrentPage = demandes.CurrentPage,
+                    ItemsPerPage = demandes.ItemsPerPage,
+                    TotalItems = demandes.TotalItems,
+                    TotalPages = demandes.TotalPages
+                }
+            };
+        }
+
+        /// <summary>
+        /// Add Employe Demande Document
+        /// </summary>
+        /// <param name="addDemandeDocumentDto">AddDemandeDocumentDto</param>
+        /// <returns></returns>
+        public async Task AddDemandeDocument(AddDemandeDocumentDto addDemandeDocumentDto)
+        {
+            await _demandeDocumentRepository.AddedAsync(new DemandeDocument
+            {
+                CinEmploye = addDemandeDocumentDto.CIN!,
+                DateDemande = addDemandeDocumentDto.DateDemande,
+                TitreDocument = addDemandeDocumentDto.TitreDocument,
+                Raison = addDemandeDocumentDto.Raison,
+                IdTypeDemandeDocument = addDemandeDocumentDto.IdTypeDocument,
+                Statut = DemandeDocumentStatusEnum.EnAttente.ToString()
+            });
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Delete Demande Document
+        /// </summary>
+        /// <param name="id">id demande</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException">InvalidDataException</exception>
+        public async Task DeleteDemande(int id)
+        {
+            var demande = await _demandeDocumentRepository.GetAsync(x => x.Id == id)
+                                                        ?? throw new InvalidDataException($"Aucune Demande avec l'id: {id}");
+
+            _demandeDocumentRepository.Delete(demande);
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        /// <summary>
+        /// Update Demande Document
+        /// </summary>
+        /// <param name="id">id demande document</param>
+        /// <param name="documentDto">AddDemandeDocumentDto</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
+        public async Task UpdateDemandeDocument(int id, AddDemandeDocumentDto documentDto)
+        {
+            var demande = await _demandeDocumentRepository.GetAsync(
+                                                                predicate: x => x.Id == id,
+                                                                include: inc => inc.Include(x => x.IdTypeDemandeDocumentNavigation)
+                                                                                    .Include(x => x.IdDocumentNavigation)
+                                                                                    .ThenInclude(x => x.IdTypeDocumentNavigation),
+                                                                disableTracking: false
+                                                            ) ?? throw new InvalidDataException($"Aucune demande avec l'id: {id}");
+
+            demande.TitreDocument = documentDto.TitreDocument;
+            demande.Raison = documentDto.Raison;
+            demande.DateDemande = documentDto.DateDemande;
+            demande.IdTypeDemandeDocument = documentDto.IdTypeDocument;
 
             _demandeDocumentRepository.Update(demande);
 

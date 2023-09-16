@@ -1,0 +1,84 @@
+﻿@using PortailRH.BLL.Dtos.Absence
+@model AbsenceDto
+
+
+<form action="/EmpAbsence/ModifierAbsence" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="typeAbsence" class=" form-control-label">Type D'Absence</label>
+            <select name="IdTypeAbsence" id="typeAbsence" class="form-control" required>
+                @if (ViewBag.TypesAbsence != null)
+                {
+                    foreach (var absence in ViewBag.TypesAbsence)
+                    {
+                        if (Model.TypeAbsence == absence.Nom)
+                        {
+                            <option value="@absence.Id" selected>@absence.Nom</option>
+                        }
+                        else
+                        {
+                            <option value="@absence.Id">@absence.Nom</option>
+                        }
+                    }
+                }
+            </select>
+            <span class="text-danger field-validation-valid" data-valmsg-for="IdTypeAbsence" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dateDebut" class=" form-control-label">Date De Début</label>
+            <input type="date" id="dateDebut" name="DateDebut" class="form-control" required value="@Model.DateDebut!.Value.ToString("yyyy-MM-dd")" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="DateDebut" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="dateFin" class=" form-control-label">Date De Fin</label>
+            <input type="date" id="dateFin" name="DateFin" class="form-control" required value="@Model.DateFin!.Value.ToString("yyyy-MM-dd")" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="DateFin" data-valmsg-replace="true"></span>
+        </div>
+
+        <div class="form-group m-t-30">
+            <label class="m-r-20">Justifie</label>
+            <label class="switch switch-3d switch-info mr-3">
+                <input type="checkbox" class="switch-input" checked="@(Model.Justifie ? true : false)" name="Justifie" />
+                <span class="switch-label"></span>
+                <span class="switch-handle"></span>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="justification">Justification</label>
+            <textarea name="Justification" id="justification" rows="5" placeholder="Entrée votre justification..." class="form-control">@Model.Justification</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="document">Document</label>
+            @if (Model.DocumentNom != null)
+            {
+                //TODO
+                <div style="display: flex; justify-content: space-between" id="documentContainer">
+                    <a href="./documents/absence/@Model.DocumentNom">clickier ici pour telecharger le document</a>
+                    <button type="button" style="color: red" id="btnClearDocument">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <input type="file" name="Document" id="document" class="form-control" />
+            }
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="submit" class="btn btn-info">Modifier</button>
+    </div>
+</form>
+
+<script>
+    $('body').on('click', '#btnClearDocument', function () {
+        $('#documentContainer').html('<input type="file" name="Document" id="document" class="form-control" />');
+    });
+</script>

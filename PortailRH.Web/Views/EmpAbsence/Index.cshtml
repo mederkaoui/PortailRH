@@ -1,0 +1,265 @@
+﻿@using PortailRH.BLL.Dtos.Absence
+@model ICollection<EmployeAbsenceDto>
+
+@{
+    Layout = "_EmployeLayout";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+<span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+
+
+<div class="container">
+
+    <div style=" display: flex; justify-content: space-between; margin-bottom: 20px; ">
+        <h2>Absences</h2>
+        <button class="btn btn-success" data-toggle="modal" data-target="#nouvelleAbsenceModal">Nouvelle Absence</button>
+    </div>
+
+    <div class="table-responsive m-b-30">
+        <table class="table table-borderless table-striped table-earning text-center">
+            <thead>
+                <tr>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>Type D'absence</th>
+                    <th>Justifie</th>
+                    <th>Opérations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var absence in Model)
+                    {
+                        <tr>
+                            <td>@Convert.ToDateTime(absence.DateDebut).ToShortDateString()</td>
+                            <td>@Convert.ToDateTime(absence.DateFin).ToShortDateString()</td>
+                            <td>@absence.TypeAbsence</td>
+                            <td class="@(absence.Justifie ? "process" : "denied")">@(absence.Justifie ? "Oui" : "Non")</td>
+                            <td>
+                                <div class="table-data-feature">
+                                    <button data-id="@absence.Id" class="item btnEdit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modifier">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                    <button data-id="@absence.Id" class="item btnDelete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Supprimer">
+                                        <i class="zmdi zmdi-delete"></i>
+                                    </button>
+                                    <button data-id="@absence.Id" class="item btnDetails" data-toggle="tooltip" data-placement="top" title="" data-original-title="Details">
+                                        <i class="zmdi zmdi-more"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Start Nouvelle Absence Modal -->
+<div class="modal fade" id="nouvelleAbsenceModal" tabindex="-1" role="dialog" aria-labelledby="nouvelleAbsenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nouvelleAbsenceModalLabel">Nouvelle Absence</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/EmpAbsence/AjouterAbsence" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="typeAbsence" class=" form-control-label">Type D'Absence</label>
+                        <select name="IdTypeAbsence" id="typeAbsence" class="form-control" required>
+                            @if (ViewBag.TypesAbsence != null)
+                            {
+                                foreach (var absence in ViewBag.TypesAbsence)
+                                {
+                                    <option value="@absence.Id">@absence.Nom</option>
+                                }
+                            }
+                        </select>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="IdTypeAbsence" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateDebut" class=" form-control-label">Date De Début</label>
+                        <input type="date" id="dateDebut" name="DateDebut" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="DateDebut" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateFin" class=" form-control-label">Date De Fin</label>
+                        <input type="date" id="dateFin" name="DateFin" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="DateFin" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="form-group m-t-30">
+                        <label class="m-r-20">Justifie</label>
+                        <label class="switch switch-3d switch-info mr-3">
+                            <input type="checkbox" class="switch-input" checked name="Justifie" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="justification">Justification</label>
+                        <textarea name="Justification" id="justification" rows="5" placeholder="Entrée votre justification..." class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document">Document</label>
+                        <input type="file" name="Document" id="document" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-info">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Nouvelle Absence Modal -->
+
+<!-- Start Modifier Absence Modal -->
+<div class="modal fade" id="modifierAbsenceModal" tabindex="-1" role="dialog" aria-labelledby="modifierAbsenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifierAbsenceModalLabel">Modifier Absence</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modifierModalContent"></div>
+        </div>
+    </div>
+</div>
+<!-- End Modifier Absence Modal -->
+
+<!-- Start Details Absence Modal -->
+<div class="modal fade" id="detailsAbsenceModal" tabindex="-1" role="dialog" aria-labelledby="detailsAbsenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsAbsenceModalLabel">Détails Absence</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="detailAbsenceModalBody">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Details Absence Modal -->
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Supprimer',
+                text: "Êtes-vous sûr de vouloir supprimer cette absence ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, Supprimer!',
+                cancelButtonText: 'Non, Annuler!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/EmpAbsence/SupprimerAbsence?id=" + id;
+                }
+            })
+        });
+        
+        $('body').on('click', '.btnEdit', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/EmpAbsence/GetModidficationData',
+                method: 'get',
+                data: {id: id},
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#modifierModalContent').html(result);
+                        $('#modifierAbsenceModal').modal();
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.btnDetails', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '/EmpAbsence/GetDetailsAbsence',
+                method: 'get',
+                data: { id: id },
+                success: function (result) {
+                    if (result.error != null && result.error.length > 0) {
+                        $('#errorMessage').text(result.error);
+                        ShowErrorAlert();
+                    } else {
+                        $('#detailAbsenceModalBody').html(result);
+                        $('#detailsAbsenceModal').modal();
+                    }
+                }
+            });
+        });
+    </script>
+}

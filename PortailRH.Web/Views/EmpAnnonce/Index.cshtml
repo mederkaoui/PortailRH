@@ -1,0 +1,120 @@
+﻿@using PortailRH.BLL.Dtos.Annonce
+@model AnnoncePaginatedListDto
+
+@{
+    Layout = "_EmployeLayout";
+}
+
+@section Styles {
+    <style>
+        .activePage {
+            background: #e86907;
+            color: #FFF;
+        }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
+}
+
+<span id="errorMessage" class="d-none">@TempData["ErrorMessage"]</span>
+
+
+<div class="container">
+    <h2 class="mb-4">Annonces</h2>
+    @foreach (var annonce in Model.Annonces)
+    {
+        <div class="card">
+            <div class="card-header bg-dark">
+                <strong class="card-title text-light">
+                    @annonce.Titre
+                    <span class="badge float-right mt-1">@Convert.ToDateTime(annonce.DateAnnonce).ToShortDateString()</span>
+                </strong>
+            </div>
+            <div class="card-body text-white bg-info">
+                <p class="card-text text-light">
+                    @annonce.Contenu
+                </p>
+            </div>
+        </div>
+    }
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                @Html.Raw(
+                "<a class='page-link' href='/EmpAnnonce?CurrentPage=" +
+                (
+                ((Model?.Pagining?.CurrentPage ?? 1) - 1) <= 0
+                ? 1
+                : ((Model?.Pagining?.CurrentPage ?? 1) - 1)
+                ) +
+                "'>Précédente</a>"
+                )
+            </li>
+            @for (int i = 1; i <= Model?.Pagining?.TotalPages; i++)
+            {
+                <li class="page-item"><a class="page-link @(Model?.Pagining.CurrentPage == i ? "activePage" : "")" href="/EmpAnnonce?CurrentPage=@i">@i</a></li>
+            }
+            <li class="page-item">
+                @Html.Raw(
+                "<a class='page-link' href='/EmpAnnonce?CurrentPage=" +
+                (
+                ((Model?.Pagining?.CurrentPage ?? 1) + 1) > (Model?.Pagining?.TotalPages + 1 ?? 1)
+                ? (Model?.Pagining?.TotalPages ?? 1)
+                : ((Model?.Pagining?.CurrentPage ?? 1) + 1)
+                ) +
+                "'>Suivante</a>"
+                )
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+        //Show Success Alert After Employee Has Been Added
+        ShowSuccessAlert();
+        function ShowSuccessAlert() {
+            // Check if the message div exists
+            const successMessage = $('#successMessage').text();
+            if (successMessage != null && successMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: successMessage,
+                    showConfirmButton: true,
+                    timer: 5000
+                })
+            }
+        }
+
+        //Show Error Alert If the Employee Wasn't Added
+        ShowErrorAlert();
+        function ShowErrorAlert() {
+            // Check if the message div exists
+            const errorMessage = $('#errorMessage').text();
+            if (errorMessage != null && errorMessage != '') {
+
+                swalWithBootstrapButtons.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessage,
+                })
+            }
+        }
+    </script>
+}

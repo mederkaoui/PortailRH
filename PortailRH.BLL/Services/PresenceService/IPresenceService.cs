@@ -13,5 +13,7 @@ namespace PortailRH.BLL.Services.PresenceService
     public interface IPresenceService
     {
         public Task<ICollection<PresenceDto>> GetPresencesByMonths(PresenceSearchDto searchDto);
+        public Task AddEmployePresence(AddPresenceDto presenceDto);
+        public Task<ICollection<EmployePresenceDto>> GetEmployePresences(string cin);
     }
 }

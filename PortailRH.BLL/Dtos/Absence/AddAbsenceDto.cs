@@ -42,7 +42,7 @@ namespace PortailRH.BLL.Dtos.Absence
         /// <summary>
         /// CIN
         /// </summary>
-        public required string CIN { get; set; }
+        public string? CIN { get; set; }
 
         /// <summary>
         /// IFormFile

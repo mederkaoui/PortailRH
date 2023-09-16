@@ -1,6 +1,10 @@
 ﻿@using PortailRH.BLL.Dtos.Annonce
 @model AnnoncePaginatedListDto
 
+@{
+    ViewBag.Title = "Annonces";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>

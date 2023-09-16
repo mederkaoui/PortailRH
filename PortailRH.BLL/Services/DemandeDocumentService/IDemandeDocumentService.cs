@@ -16,5 +16,9 @@ namespace PortailRH.BLL.Services.DemandeDocumentService
         public Task<DemandeDocumentDto> GetDetailsDemande(int id);
         public Task<ICollection<TypeDocumentDto>> GetTypesDocument();
         public Task AddedDocument(UploadDocumentDto uploadDocumentDto);
+        public Task<EmployeDemandeDocumentPaginatedListDto> GetEmployePaginatedDemandes(EmployeDemandeDocumentSearchDto searchDto);
+        public Task AddDemandeDocument(AddDemandeDocumentDto addDemandeDocumentDto);
+        public Task DeleteDemande(int id);
+        public Task UpdateDemandeDocument(int id, AddDemandeDocumentDto documentDto);
     }
 }

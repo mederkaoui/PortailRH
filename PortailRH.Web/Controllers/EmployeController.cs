@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Server;
+using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Services.EmployeService;
 using PortailRH.BLL.Services.TypeContratService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
@@ -33,18 +36,39 @@ namespace PortailRH.Web.Controllers
         private readonly ILogger<EmployeController> _logger;
 
         /// <summary>
+        /// IDataProtector
+        /// </summary>
+        private readonly IDataProtector _dataProtector;
+
+        /// <summary>
+        /// IHttpContextAccessor
+        /// </summary>
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        /// <summary>
+        /// UserDto
+        /// </summary>
+        private UserDto _currentUser;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="employeService">IEmployeService</param>
         /// <param name="typeContratService">ITypeContratService</param>
         /// <param name="webHostEnvironment">IWebHostEnvironment</param>
         /// <param name="logger">ILogger<EmployeController></param>
-        public EmployeController(IEmployeService employeService, ITypeContratService typeContratService, IWebHostEnvironment webHostEnvironment, ILogger<EmployeController> logger)
+        /// <param name="dataProtectionProvider">IDataProtectionProvider</param>
+        /// <param name="httpContextAccessor">IHttpContextAccessor</param>
+        public EmployeController(IEmployeService employeService, ITypeContratService typeContratService, 
+            IWebHostEnvironment webHostEnvironment, ILogger<EmployeController> logger, IDataProtectionProvider dataProtectionProvider, IHttpContextAccessor httpContextAccessor)
         {
             _employeService = employeService;
             _typeContratService = typeContratService;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
+            _dataProtector = dataProtectionProvider.CreateProtector("LoginDtoProtection");
+            _httpContextAccessor = httpContextAccessor;
+            _currentUser = new UserDto();
         }
 
         [HttpGet]
@@ -201,6 +225,7 @@ namespace PortailRH.Web.Controllers
             try
             {
                 ViewBag.ListsData = await _employeService.GetSelectListsData();
+                _currentUser = _httpContextAccessor.HttpContext!.Session.GetEncryptedObject<UserDto>("LoggedInUser", _dataProtector);
 
                 if (ModelState.IsValid)
                 {
@@ -224,7 +249,7 @@ namespace PortailRH.Web.Controllers
                         employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
                     }
 
-                    var updatedEmploye = await _employeService.UpdateEmploye(employe);
+                    var updatedEmploye = await _employeService.UpdateEmploye(_currentUser.CIN!, employe);
 
                     TempData["SuccessMessage"] = "Employé modifié avec succès!";
 

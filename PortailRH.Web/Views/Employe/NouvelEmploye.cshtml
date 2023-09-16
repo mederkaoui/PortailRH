@@ -1,6 +1,10 @@
 ﻿@using PortailRH.BLL.Dtos.Employe
 @model NouvelEmployeDto
 
+@{
+    ViewBag.Title = "Nouvel Employé";
+}
+
 @if (TempData["SuccessMessage"] != null)
 {
     <span id="successMessage" class="d-none">@TempData["SuccessMessage"]</span>
@@ -294,17 +298,20 @@
                     <div id="diplomesContainer">
                         @if (Model != null)
                         {
-                            foreach (var diplome in Model.Diplomes)
+                            for (int i = 0; i < Model.Diplomes.Count; i++)
                             {
                                 <div class="diplome-entry">
                                     <div class="row">
-                                        <div class="col-lg-6 col-sm-6 mb-3">
-                                            <label asp-for="@diplome.Niveau">Niveau</label>
-                                            <input asp-for="@diplome.Niveau" class="form-control" />
+                                        <div class="col-lg-5 col-sm-5 mb-3">
+                                            <label>Niveau</label>
+                                            <input name="Diplomes[@i].Niveau" value="@Model.Diplomes.ToList()[i].Niveau" class="form-control" />
                                         </div>
-                                        <div class="col-lg-6 col-sm-6 mb-3">
-                                            <label asp-for="@diplome.Titre">Titre</label>
-                                            <input asp-for="@diplome.Titre" class="form-control" />
+                                        <div class="col-lg-5 col-sm-5 mb-3">
+                                            <label>Titre</label>
+                                            <input name="Diplomes[@i].Titre" value="@Model.Diplomes.ToList()[i].Titre" class="form-control" />
+                                        </div>
+                                        <div class="col-lg-2 col-sm-2 mb-3">
+                                            <span class="delete-diplome"><i class="fa fa-times"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -314,13 +321,16 @@
                         {
                             <div class="diplome-entry">
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                    <div class="col-lg-5 col-sm-5 mb-3">
                                         <label>Niveau</label>
                                         <input name="Diplomes[0].Niveau" class="form-control" />
                                     </div>
-                                    <div class="col-lg-6 col-sm-6 mb-3">
+                                    <div class="col-lg-5 col-sm-5 mb-3">
                                         <label>Titre</label>
                                         <input name="Diplomes[0].Titre" class="form-control" />
+                                    </div>
+                                    <div class="col-lg-2 col-sm-2 mb-3">
+                                        <span class="delete-diplome"><i class="fa fa-times"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -450,27 +460,29 @@
             const addDiplomeButton = document.getElementById("addDiplome");
             const diplomesContainer = document.getElementById("diplomesContainer");
 
-            let diplomeCount = @(Model?.Diplomes.Count ?? 1);
-
             addDiplomeButton.addEventListener("click", function () {
+                var diplomeCount = $("#diplomesContainer > .diplome-entry").length;
+
                 const newDiplomeEntry = document.createElement("div");
                 newDiplomeEntry.className = "diplome-entry";
 
                 newDiplomeEntry.innerHTML = `
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6 mb-3">
-                                <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
-                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
-                            </div>
-                            <div class="col-lg-6 col-sm-6 mb-3">
-                                <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
-                                <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
-                            </div>
-                        </div>
-                    `;
+                                                <div class="row">
+                                                    <div class="col-lg-5 col-sm-5 mb-3">
+                                                        <label for="Diplomes_${diplomeCount}__Niveau">Niveau</label>
+                                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Niveau" />
+                                                    </div>
+                                                    <div class="col-lg-5 col-sm-5 mb-3">
+                                                        <label for="Diplomes_${diplomeCount}__Titre">Titre</label>
+                                                        <input type="text" class="form-control" name="Diplomes[${diplomeCount}].Titre" />
+                                                    </div>
+                                                    <div class="col-lg-2 col-sm-2 mb-3">
+                                                        <span class="delete-diplome"><i class="fa fa-times"></i></span>
+                                                    </div>
+                                                </div>
+                                            `;
 
                 diplomesContainer.appendChild(newDiplomeEntry);
-                diplomeCount++;
             });
         });
 
@@ -528,5 +540,21 @@
                 })
             }
         }
+
+        $("body").on('click', '.delete-diplome', function () {
+            $(this).closest(".diplome-entry").remove();
+
+            var index = -1;
+            $("#diplomesContainer .diplome-entry").each(function () {
+                var inputs = $(this).find('input');
+                inputs.each(function () {
+                    var currentName = $(this).attr('name');
+                    var newName = currentName.replace(/\[(\d+)\]/, '[' + index + ']');
+                    $(this).attr('name', newName);
+                });
+
+                index++;
+            });
+        });
     </script>
 }

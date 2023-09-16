@@ -3,6 +3,7 @@ using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.AnnonceService;
 using PortailRH.BLL.Services.AuthentificationService;
 using PortailRH.BLL.Services.CongeService;
+using PortailRH.BLL.Services.DashboardService;
 using PortailRH.BLL.Services.DemandeDocumentService;
 using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.EmployeService;
@@ -36,6 +37,7 @@ namespace PortailRH.BLL
             services.AddScoped<IAnnonceService, AnnonceService>();
             services.AddScoped<IPaiementService, PaiementService>();
             services.AddScoped<IAuthentificationService, AuthentificationService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             return services;
         }

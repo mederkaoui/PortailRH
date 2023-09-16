@@ -60,7 +60,7 @@
                              alt="@string.Concat(@user.Nom, " ", @user.Prenom)">
                     </div>
                     <div class="d-block">
-                        <h2 class="h5 mb-3">Hi, Jane</h2>
+                        <h2 class="h5 mb-3">@string.Concat(@user.Nom, " ", @user.Prenom)</h2>
                     </div>
                 </div>
                 <div class="collapse-close d-md-none">
@@ -73,15 +73,15 @@
             </div>
             <ul class="nav flex-column pt-3 pt-md-0">
                 <li class="nav-item">
-                    <a href="/" class="nav-link d-flex align-items-center">
+                    <a href="/Dashboard" class="nav-link d-flex align-items-center">
                         <span class="sidebar-icon">
-                            <img src="~/images/PortailRh/PortailRH_Logo.png" height="20" width="20" alt="Volt Logo">
+                            <img src="~/images/PortailRh/PortailRH_Logo.png" height="20" width="20" alt="PortailRH Logo">
                         </span>
                         <span class="mt-1 ms-1 sidebar-text">Portail RH</span>
                     </a>
                 </li>
                 <li class="nav-item active " id="navDashboard">
-                    <a href="../../pages/dashboard/dashboard.html" class="nav-link">
+                    <a href="/Dashboard" class="nav-link">
                         <span class="sidebar-icon">
                             <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
                         </span>
@@ -172,7 +172,7 @@
                         <span class="sidebar-icon">
                             <i class="fa-solid fa-clock" style="color: #9ca3af;"></i>
                         </span>
-                        <span class="sidebar-text">Absence</span>
+                        <span class="sidebar-text">Absences</span>
                     </a>
                 </li>
 
@@ -181,7 +181,7 @@
                         <span class="sidebar-icon">
                             <i class="fa-solid fa-check-double" style="color: #9ca3af;"></i>
                         </span>
-                        <span class="sidebar-text">Présence</span>
+                        <span class="sidebar-text">Présences</span>
                     </a>
                 </li>
 
@@ -229,8 +229,10 @@
     <main class="content">
 
         <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0 mb-5">
-            <div class="container-fluid px-0 justify-content-end">
-                <div class="d-flex"S>
+            <div class="container-fluid px-0 justify-content-between">
+                <h2>@(ViewBag.Title ?? "Portail RH")</h2>
+
+                <div class="d-flex">
                     <!-- Navbar links -->
                     <ul class="navbar-nav align-items-center">
                         <li class="nav-item dropdown ms-lg-3">
@@ -297,8 +299,7 @@
     <script src="~/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
 
     <!-- Charts -->
-    <script src="~/vendor/chartist/dist/chartist.min.js"></script>
-    <script src="~/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+    <script src="~/js/char.js"></script>
 
     <!-- Datepicker -->
     <script src="~/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>

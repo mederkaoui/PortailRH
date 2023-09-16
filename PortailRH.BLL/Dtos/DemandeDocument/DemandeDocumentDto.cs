@@ -10,13 +10,8 @@ namespace PortailRH.BLL.Dtos.DemandeDocument
     /// <summary>
     /// DemandeDocumentDto
     /// </summary>
-    public class DemandeDocumentDto
+    public class DemandeDocumentDto : EmployeDemandeDocumentDto
     {
-        /// <summary>
-        /// Id
-        /// </summary>
-        public int? Id { get; set; }
-
         /// <summary>
         /// CIN
         /// </summary>
@@ -31,35 +26,5 @@ namespace PortailRH.BLL.Dtos.DemandeDocument
         /// Prenom
         /// </summary>
         public string? Prenom { get; set; }
-
-        /// <summary>
-        /// TitreDocument
-        /// </summary>
-        public string? TitreDocument { get; set; }
-
-        /// <summary>
-        /// DateDemande
-        /// </summary>
-        public DateTime? DateDemande { get; set; }
-
-        /// <summary>
-        /// Raison
-        /// </summary>
-        public string? Raison { get; set; }
-
-        /// <summary>
-        /// DocumentNom
-        /// </summary>
-        public string? DocumentNom { get; set; }
-
-        /// <summary>
-        /// TypeDocument
-        /// </summary>
-        public string? TypeDocument { get; set; }
-
-        /// <summary>
-        /// Status
-        /// </summary>
-        public string? Status { get; set; }
     }
 }
