@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Dtos.Presence;
-using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.PresenceService;
 using PortailRH.Web.Classes;
 
@@ -11,6 +10,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmpPresenceController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpPresenceController : Controller
     {
         /// <summary>

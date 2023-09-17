@@ -231,5 +231,17 @@ namespace PortailRH.DAL.Repositories.GenericRepository
 
             _logger.LogInformation($"Updating entity {EntityType.Name} with data : {entity}");
         }
+
+        public async Task<int> GetCount(Expression<Func<TEntity, bool>>? predicate = null)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query.CountAsync();
+        }
     }
 }

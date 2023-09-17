@@ -53,7 +53,8 @@ namespace PortailRH.BLL.Services.AuthentificationService
         {
             var user = await _authentificationRepository.GetAsync(
                                                                 predicate: x => x.NomUtilisateur == loginDto.Username &&
-                                                                                x.MotDePasse == loginDto.Password,
+                                                                                x.MotDePasse == loginDto.Password &&
+                                                                                x.CinEmployeNavigation.EstSupprime == false,
                                                                 include: inc => inc.Include(x => x.CinEmployeNavigation)
                                                                                     .ThenInclude(x => x.IdFonctionNavigation)
                                                                                     .ThenInclude(x => x.IdDepartementNavigation)

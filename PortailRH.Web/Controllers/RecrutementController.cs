@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Recrutement;
 using PortailRH.BLL.Services.DepartementService;
 using PortailRH.BLL.Services.RecrutementService;
-using PortailRH.DAL.Entities;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// RecrutementController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class RecrutementController : Controller
     {
         /// <summary>

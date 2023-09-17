@@ -25,5 +25,6 @@ namespace PortailRH.DAL.Repositories.GenericRepository
         void Delete(object id);
         void Delete(TEntity entity);
         void Delete(IEnumerable<TEntity> entities);
+        Task<int> GetCount(Expression<Func<TEntity, bool>>? predicate = null);
     }
 }

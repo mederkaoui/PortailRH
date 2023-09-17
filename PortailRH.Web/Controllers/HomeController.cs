@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Services.AuthentificationService;
+using PortailRH.Web.Models;
+using System.Diagnostics;
 
 namespace PortailRH.Web.Controllers
 {
@@ -132,13 +134,29 @@ namespace PortailRH.Web.Controllers
             }
         }
 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error(int statutCode)
+        {
+            if (statutCode == 404)
+            {
+                return View();
+            }
+
+            if (statutCode == 401)
+            {
+                return View("NotAuthorized");
+            }
+
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
         /// <summary>
         /// Use Cookie Information to Get User Login
         /// </summary>
         /// <returns></returns>
         private async Task<IActionResult> AutoLogin()
         {
-            if (Request.Cookies.TryGetValue("LoggedInUserCookie", out string userData))
+            if (Request.Cookies.TryGetValue("LoggedInUserCookie", out string? userData))
             {
                 try
                 {

@@ -17,6 +17,21 @@ namespace PortailRH.BLL.Services.DashboardService
         private readonly IGenericRepository<Employe> _employeRepository;
 
         /// <summary>
+        /// IGenericRepository<Contrat>
+        /// </summary>
+        private readonly IGenericRepository<Contrat> _contratRepository;
+
+        /// <summary>
+        /// IGenericRepository<Paiement>
+        /// </summary>
+        private readonly IGenericRepository<Paiement> _paiementRepository;
+
+        /// <summary>
+        /// IGenericRepository<Absence>
+        /// </summary>
+        private readonly IGenericRepository<Absence> _absenceRepository;
+
+        /// <summary>
         /// ILogger<DashboardService>
         /// </summary>
         private readonly ILogger<DashboardService> _logger;
@@ -25,10 +40,17 @@ namespace PortailRH.BLL.Services.DashboardService
         /// Constructor
         /// </summary>
         /// <param name="employeRepository">IGenericRepository<Employe></param>
+        /// <param name="contratRepository">IGenericRepository<Contrat></param>
+        /// <param name="paiementRepository">IGenericRepository<Paiement></param>
+        /// <param name="absenceRepository">IGenericRepository<Absence></param>
         /// <param name="logger">ILogger<DashboardService></param>
-        public DashboardService(IGenericRepository<Employe> employeRepository, ILogger<DashboardService> logger)
+        public DashboardService(IGenericRepository<Employe> employeRepository, IGenericRepository<Contrat> contratRepository,
+            IGenericRepository<Paiement> paiementRepository, IGenericRepository<Absence> absenceRepository, ILogger<DashboardService> logger)
         {
             _employeRepository = employeRepository;
+            _contratRepository = contratRepository;
+            _paiementRepository = paiementRepository;
+            _absenceRepository = absenceRepository;
             _logger = logger;
         }
 
@@ -39,13 +61,14 @@ namespace PortailRH.BLL.Services.DashboardService
         /// <returns>ICollection<EmployeChartDataDto></returns>
         public async Task<ICollection<EmployeChartDataDto>> GetChartData(int? year)
         {
-            var data = await _employeRepository.GetListAsync(
-                                                            //predicate: x => x.Contrats.First().DateDebut!.Value.Year == (year ?? DateTime.Now.Year),
-                                                            include: inc => inc.Include(x => x.Contrats)
+            year = year != null && year > 0 ? year : DateTime.Now.Year;
+            var data = await _contratRepository.GetListAsync(
+                                                            predicate: x => x.DateDebut!.Value.Year == year &&
+                                                                            x.CinEmployeNavigation.EstSupprime == false
                                                         );
 
             var chartData = data
-                .SelectMany(employe => employe.Contrats)
+                .DistinctBy(x => x.CinEmploye)
                 .GroupBy(contrat => new { Year = contrat.DateDebut!.Value.Year, Month = contrat.DateDebut.Value.Month })
                 .Select(group => new
                 {
@@ -63,6 +86,33 @@ namespace PortailRH.BLL.Services.DashboardService
                 Month = x.Month,
                 EmployeeCount = x.EmployeeCount
             }).ToList();
+        }
+
+        /// <summary>
+        /// Get Statistics Data
+        /// </summary>
+        /// <returns>StatisticsDataDto</returns>
+        public async Task<StatisticsDataDto> GetStatisticsData()
+        {
+            var employesCount = await _employeRepository.GetCount(
+                                                                predicate: x => x.EstSupprime == false
+                                                            );
+
+            var absences = await _absenceRepository.GetListAsync(
+                                                                predicate: x => x.DateDebut!.Value.Year == DateTime.Now.Year &&
+                                                                                x.DateDebut.Value.Month == DateTime.Now.Month
+                                                            );
+
+            var paiments = await _paiementRepository.GetListAsync(
+                                                                predicate: x => x.DatePaiement!.Value.Year == DateTime.Now.Year
+                                                            );
+
+            return new StatisticsDataDto
+            {
+                Absences = absences.Sum(x => (x.DateFin - x.DateDebut)!.Value.Days),
+                Paiements = paiments.Sum(x => x.Salaire),
+                TotalEmployes = employesCount
+            };
         }
     }
 }

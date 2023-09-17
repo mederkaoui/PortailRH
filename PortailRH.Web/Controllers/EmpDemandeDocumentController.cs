@@ -10,6 +10,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmpDemandeDocumentController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpDemandeDocumentController : Controller
     {
         /// <summary>

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Dashboard;
 using PortailRH.BLL.Services.DashboardService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// DashboardController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class DashboardController : Controller
     {
         /// <summary>
@@ -36,6 +38,7 @@ namespace PortailRH.Web.Controllers
             try
             {
                 var data = await _dashboardService.GetChartData(year);
+                ViewBag.StatisticData = await _dashboardService.GetStatisticsData();
 
                 return View(data);
             }

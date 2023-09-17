@@ -13,5 +13,6 @@ namespace PortailRH.BLL.Services.DashboardService
     public interface IDashboardService
     {
         public Task<ICollection<EmployeChartDataDto>> GetChartData(int? year);
+        public Task<StatisticsDataDto> GetStatisticsData();
     }
 }

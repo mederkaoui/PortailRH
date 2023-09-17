@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Absence;
 using PortailRH.BLL.Dtos.Authentification;
@@ -12,6 +10,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmpAbsenceController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpAbsenceController : Controller
     {
         /// <summary>

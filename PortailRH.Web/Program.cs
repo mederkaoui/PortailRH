@@ -16,6 +16,14 @@ builder.Services.AddDbContext<PortailrhContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAuthentication("LoggedInUserCookie")
+    .AddCookie("LoggedInUserCookie", options =>
+    {
+        // Configure cookie options here
+    });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,11 +34,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithRedirects("/Home/Error?statusCode={0}");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

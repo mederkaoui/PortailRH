@@ -10,6 +10,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmpCongeController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpCongeController : Controller
     {
         /// <summary>

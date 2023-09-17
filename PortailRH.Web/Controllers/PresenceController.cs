@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Presence;
 using PortailRH.BLL.Services.PresenceService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// PresenceController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class PresenceController : Controller
     {
         /// <summary>

@@ -2,13 +2,14 @@
 using PortailRH.BLL.Dtos.Absence;
 using PortailRH.BLL.Services.AbsenceService;
 using PortailRH.BLL.Services.EmployeService;
-using PortailRH.DAL.Entities;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// AbsenceController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class AbsenceController : Controller
     {
         /// <summary>

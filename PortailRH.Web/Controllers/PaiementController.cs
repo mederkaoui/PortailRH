@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PortailRH.BLL.Dtos.Annonce;
 using PortailRH.BLL.Dtos.Paiement;
 using PortailRH.BLL.Services.PaiementService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// PaiementController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class PaiementController : Controller
     {
         /// <summary>

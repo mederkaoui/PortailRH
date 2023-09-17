@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.DemandeDocument;
 using PortailRH.BLL.Services.DemandeDocumentService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// DemandeDocumentController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class DemandeDocumentController : Controller
     {
         /// <summary>

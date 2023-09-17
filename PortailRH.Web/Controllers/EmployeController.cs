@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Server;
 using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Dtos.Employe;
 using PortailRH.BLL.Services.EmployeService;
@@ -13,6 +11,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmployeController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class EmployeController : Controller
     {
         /// <summary>
@@ -95,9 +94,9 @@ namespace PortailRH.Web.Controllers
 
                 return View();
             }
-            catch (Exception ex)
+            catch
             {
-                return View(); //TODO: handel pages 404, 500
+                return View();
             }
         }
 

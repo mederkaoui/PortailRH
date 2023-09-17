@@ -3,12 +3,14 @@ using PortailRH.BLL.Dtos.Conge;
 using PortailRH.BLL.Dtos.Shared;
 using PortailRH.BLL.Services.CongeService;
 using PortailRH.BLL.Services.EmployeService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// CongeController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: true)]
     public class CongeController : Controller
     {
         /// <summary>

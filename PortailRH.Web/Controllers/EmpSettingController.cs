@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Authentification;
 using PortailRH.BLL.Dtos.Employe;
@@ -12,6 +10,7 @@ namespace PortailRH.Web.Controllers
     /// <summary>
     /// EmpSettingController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpSettingController : Controller
     {
         /// <summary>
@@ -122,7 +121,7 @@ namespace PortailRH.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 TempData["ErrorMessage"] = "Une erreur s'est produite lors de la Modification des informations.";
 

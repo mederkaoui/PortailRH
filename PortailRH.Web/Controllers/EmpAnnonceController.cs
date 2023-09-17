@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PortailRH.BLL.Dtos.Annonce;
 using PortailRH.BLL.Services.AnnonceService;
+using PortailRH.Web.Classes;
 
 namespace PortailRH.Web.Controllers
 {
     /// <summary>
     /// EmpAnnonceController
     /// </summary>
+    [CustomAuthorize(isAdminRequired: false)]
     public class EmpAnnonceController : Controller
     {
         /// <summary>
