@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\documents\absence\" />
+    <Folder Include="wwwroot\documents\cv\" />
     <Folder Include="wwwroot\documents\demandes\" />
     <Folder Include="wwwroot\vendor\chartist\dist\scss\settings\" />
     <Folder Include="wwwroot\vendor\sass\types\legacy\" />

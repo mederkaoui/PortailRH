@@ -18,10 +18,15 @@ builder.Services.AddDbContext<PortailrhContext>(options =>
 });
 
 builder.Services.AddAuthentication("LoggedInUserCookie")
-    .AddCookie("LoggedInUserCookie", options =>
-    {
-        // Configure cookie options here
-    });
+.AddCookie("LoggedInUserCookie", options =>
+{
+    // Configure cookie options here
+});
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
 
 
 var app = builder.Build();

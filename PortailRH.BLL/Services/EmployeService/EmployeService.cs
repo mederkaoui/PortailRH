@@ -188,7 +188,7 @@ namespace PortailRH.BLL.Services.EmployeService
                 SituationFamiliale = employe.SituationFamiliale,
                 MatriculeCnss = employe.MatriculeCnss,
                 NombreEnfants = employe.Enfants,
-                Photo = employe.PhotoName,
+                Photo = employe.PhotoName ?? "profile.png",
                 IdVille = employe.Ville,
                 Adresse = employe.Adresse,
                 IdFonction = employe.Fonction,
