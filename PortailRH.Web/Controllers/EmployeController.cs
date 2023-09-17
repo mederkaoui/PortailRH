@@ -112,21 +112,35 @@ namespace PortailRH.Web.Controllers
                     // Handle image upload
                     if (employe.Photo != null && employe.Photo.Length > 0)
                     {
-                        string uploadFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images/EmployeImages");
-                        if (!Directory.Exists(uploadFolderPath))
+                        // Check if the uploaded file has an allowed image file extension
+                        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" }; // Add more extensions if needed
+                        string fileExtension = Path.GetExtension(employe.Photo.FileName).ToLowerInvariant();
+
+                        if (allowedExtensions.Contains(fileExtension))
                         {
-                            Directory.CreateDirectory(uploadFolderPath);
+                            string uploadFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images/EmployeImages");
+                            if (!Directory.Exists(uploadFolderPath))
+                            {
+                                Directory.CreateDirectory(uploadFolderPath);
+                            }
+
+                            string uniqueFileName = Guid.NewGuid().ToString() + "_" + employe.Photo.FileName;
+                            string filePath = Path.Combine(uploadFolderPath, uniqueFileName);
+
+                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await employe.Photo.CopyToAsync(fileStream);
+                            }
+
+                            employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
                         }
-
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + employe.Photo.FileName;
-                        string filePath = Path.Combine(uploadFolderPath, uniqueFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        else
                         {
-                            await employe.Photo.CopyToAsync(fileStream);
+                            // Handle the case where the uploaded file is not an allowed image type
+                            ModelState.AddModelError("Photo", "Please upload a valid image file.");
+                            TempData["ErrorMessage"] = "Le fichier que vous avez téléchargé n'est pas une image valide. Veuillez télécharger une image valide.";
+                            return View("NouvelEmploye", employe);
                         }
-
-                        employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
                     }
 
                     await _employeService.AddedEmploye(employe);
@@ -231,21 +245,35 @@ namespace PortailRH.Web.Controllers
                     // Handle image upload
                     if (employe.Photo != null && employe.Photo.Length > 0)
                     {
-                        string uploadFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images/EmployeImages");
-                        if (!Directory.Exists(uploadFolderPath))
+                        // Check if the uploaded file has an allowed image file extension
+                        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" }; // Add more extensions if needed
+                        string fileExtension = Path.GetExtension(employe.Photo.FileName).ToLowerInvariant();
+
+                        if (allowedExtensions.Contains(fileExtension))
                         {
-                            Directory.CreateDirectory(uploadFolderPath);
+                            string uploadFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images/EmployeImages");
+                            if (!Directory.Exists(uploadFolderPath))
+                            {
+                                Directory.CreateDirectory(uploadFolderPath);
+                            }
+
+                            string uniqueFileName = Guid.NewGuid().ToString() + "_" + employe.Photo.FileName;
+                            string filePath = Path.Combine(uploadFolderPath, uniqueFileName);
+
+                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await employe.Photo.CopyToAsync(fileStream);
+                            }
+
+                            employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
                         }
-
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + employe.Photo.FileName;
-                        string filePath = Path.Combine(uploadFolderPath, uniqueFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        else
                         {
-                            await employe.Photo.CopyToAsync(fileStream);
+                            // Handle the case where the uploaded file is not an allowed image type
+                            ModelState.AddModelError("Photo", "Please upload a valid image file.");
+                            TempData["ErrorMessage"] = "Le fichier que vous avez téléchargé n'est pas une image valide. Veuillez télécharger une image valide.";
+                            return View("NouvelEmploye", employe);
                         }
-
-                        employe.PhotoName = uniqueFileName; // Update the Photo property with the image file name
                     }
 
                     var updatedEmploye = await _employeService.UpdateEmploye(_currentUser.CIN!, employe);
